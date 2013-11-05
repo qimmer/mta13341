@@ -4,17 +4,23 @@
 #
 #-------------------------------------------------
 
-QT       -= core gui
+QT       += gui core
 
 TARGET = Tracking
 TEMPLATE = lib
 
 DEFINES += TRACKING_LIBRARY
 
-SOURCES += tracking.cpp
+INCLUDEPATH += "../libfreenect-master/include"
+
+SOURCES += tracking.cpp \
+    sensor.cpp \
+    playertracker.cpp
 
 HEADERS += tracking.h\
-        tracking_global.h
+        tracking_global.h \
+    sensor.h \
+    playertracker.h
 
 unix:!symbian {
     maemo5 {

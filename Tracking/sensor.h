@@ -6,10 +6,16 @@
 class Sensor
 {
 public:
-    Sensor(int deviceId);
+    Sensor();
+
+    bool initialize(int sensorId);
+
+    void update();
 
     const QImage& getDepthImage() const;
 
+private:
+    QImage depthImage;
 };
 
 #endif // SENSOR_H

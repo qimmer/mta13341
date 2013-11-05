@@ -1,6 +1,21 @@
 #include "sensor.h"
 #include <libfreenect.h>
 
-Sensor::Sensor(int deviceId)
+Sensor::Sensor()
 {
+}
+
+bool Sensor::initialize(int sensorId)
+{
+
+}
+
+void Sensor::update()
+{
+
+}
+
+const QImage &Sensor::getDepthImage() const
+{
+
 }
