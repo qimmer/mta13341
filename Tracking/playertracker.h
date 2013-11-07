@@ -2,19 +2,20 @@
 #define PLAYERTRACKER_H
 
 #include <QVector3D>
+#include "tracking_global.h"
 
 /**
  * @brief trackPlayer Does the BLOB detection on the input depth
  *        image to track up to 2 players.
  * @param depthImage
  */
-void track(const QImage& depthImage);
+TRACKINGSHARED_EXPORT void track(const QImage& depthImage);
 
 /**
  * @brief getNumPlayers
  * @return The number of active players
  */
-int getNumPlayers();
+TRACKINGSHARED_EXPORT int getNumPlayers();
 
 /**
  * @brief getPlayerPosition
@@ -22,13 +23,13 @@ int getNumPlayers();
  * @return A vector containing the specific player's tracked
  *         position in world space
  */
-const QVector3D& getPlayerPosition(int player);
+TRACKINGSHARED_EXPORT const QVector3D& getPlayerPosition(int player);
 
 /**
  * @brief getPlayerScreenPosition
  * @param player
  * @return The current screen position of a player in screen pixels
  */
-const QVector2D& getPlayerScreenPosition(int player);
+TRACKINGSHARED_EXPORT const QVector2D& getPlayerScreenPosition(int player);
 
 #endif // PLAYERTRACKER_H

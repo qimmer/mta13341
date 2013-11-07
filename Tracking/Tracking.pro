@@ -11,16 +11,22 @@ TEMPLATE = lib
 
 DEFINES += TRACKING_LIBRARY
 
-INCLUDEPATH += "../libfreenect-master/include"
+INCLUDEPATH += "C:\Program Files\Microsoft SDKs\Kinect\v1.8\inc"
+
+LIBS += -L"C:\Program Files\Microsoft SDKs\Kinect\v1.8\lib\x86" -l"Kinect10"
 
 SOURCES += tracking.cpp \
     sensor.cpp \
-    playertracker.cpp
+    playertracker.cpp \
+    depthslicer.cpp \
+    velocitymapper.cpp
 
 HEADERS += tracking.h\
         tracking_global.h \
     sensor.h \
-    playertracker.h
+    playertracker.h \
+    depthslicer.h \
+    velocitymapper.h
 
 unix:!symbian {
     maemo5 {
