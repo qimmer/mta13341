@@ -28,17 +28,17 @@ win32 {
 SOURCES += tracking.cpp \
     sensor.cpp \
     playertracker.cpp \
-    depthslicer.cpp \
     velocitymapper.cpp \
-    BlobDetector.cpp
+    BlobDetector.cpp \
+    utility.cpp
 
 HEADERS += tracking.h\
         tracking_global.h \
     sensor.h \
     playertracker.h \
-    depthslicer.h \
     velocitymapper.h \
-    BlobDetector.h
+    BlobDetector.h \
+    utility.h
 
 unix:!symbian {
     maemo5 {

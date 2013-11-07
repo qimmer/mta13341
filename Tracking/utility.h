@@ -1,20 +1,20 @@
-#ifndef DEPTHSLICER_H
-#define DEPTHSLICER_H
+#ifndef UTILITY_H
+#define UTILITY_H
 
 #include "tracking_global.h"
 #include <QImage>
 #include <QList>
 
-class TRACKINGSHARED_EXPORT DepthSlicer
+class TRACKINGSHARED_EXPORT Utility
 {
 public:
-    DepthSlicer();
-
-    void sliceDepth(float *pDepthSrc,
+    static void sliceDepth(float *pDepthSrc,
                     float *pDest,
                     float nearDepth,
                     float farDepth,
                     const QSize& size);
+
+    static void depthToBinary(float *pDepthSrc, QImage *binaryImage);
 };
 
 #endif // DEPTHSLICER_H

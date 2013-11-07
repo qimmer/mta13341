@@ -6,11 +6,12 @@
 
 struct Blob
 {
-    QSize boundingBox;
-    QPoint center;
-    float circularity;
+    QRect boundingBox;
     QImage isolatedImage;
+    float avrDepth;
     int pixelCount;
+
+    bool operator < (const Blob& blob) const;
 };
 
 class TRACKINGSHARED_EXPORT BlobDetector
@@ -18,15 +19,16 @@ class TRACKINGSHARED_EXPORT BlobDetector
 public:
     BlobDetector();
 
-    void update(const QImage& binaryImage);
+    void update(const QImage& binaryImage, const float *depthValues = 0, float depthThreashold = 0.0f);
 
     int getNumBlobs() const;
     const Blob& getBlob(int index) const;
 
-    void grassFire(const QImage &image, QImage &blobImg, int x, int y, QColor color, int &size);
-
+    int grassFire(const QImage &image, QImage &blobImg, const float *depthValues, int x, int y, QColor color, QRect& boundingBox, float &avrDepth);
+    bool testPixel(const QImage &image, QImage &blobImg, const float *depthValues, const QPoint& p);
 private:
     QList<Blob> blobs;
+    float depthThreashold;
 };
 
 #endif // BLOBDETECTOR_H

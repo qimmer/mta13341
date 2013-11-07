@@ -5,8 +5,11 @@ BlobDetector::BlobDetector()
 {
 }
 
-void BlobDetector::update(const QImage &binaryImage)
+void BlobDetector::update(const QImage &binaryImage, const float *depthValues, float depthThreashold)
 {
+    this->depthThreashold = depthThreashold;
+
+    int largestBlob = 0;
     // Empty the blob container
     this->blobs.clear();
 
@@ -25,8 +28,8 @@ void BlobDetector::update(const QImage &binaryImage)
 
     //Makes an empty blobImg, same size and format as the binaryImage
     QImage blobImg(binaryImage.size(), binaryImage.format());
-    blobImg.fill(Qt::black);
-
+    //blobImg.fill(QColor(Qt::black));
+    memset(blobImg.bits(), 255, blobImg.width()*blobImg.height()*4);
 
     QColor colors[] = {QColor(Qt::blue),
                        QColor(Qt::green),
@@ -36,25 +39,35 @@ void BlobDetector::update(const QImage &binaryImage)
 
     int blobId = 0;
 
-    for(int y = 0; y < binaryImage.size().height(); y++){
-        for(int x = 0; x < binaryImage.size().width(); x++){
+    for(int y = 0; y < binaryImage.size().height(); y++)
+    {
+        for(int x = 0; x < binaryImage.size().width(); x++)
+        {
+
+            QPoint tp(x,y);
 
             //Grassfire algorithm to find BLOB.
-            if (binaryImage.pixel(x, y) == QColor(Qt::white).rgb() && blobImg.pixel(x, y) == QColor(Qt::black).rgb()){
-                QImage tmpImg = blobImg;
-                Blob tmpBlob;
+            if (testPixel(binaryImage, blobImg, depthValues, tp))
+            {
+                QRect bb;
+                float avrDepth = 0.0f;
+                int size = grassFire(binaryImage, blobImg, depthValues, x, y, colors[blobId % 5], bb, avrDepth);
 
-                int size = 0;
-                grassFire(binaryImage, blobImg, x, y, colors[blobId % 5], size);
+                if( size > largestBlob )
+                    largestBlob = size;
 
-                if (size < 100 || size > 300){ //Size of BLOB has to be between:
-                    blobImg = tmpImg;
-                }
-                else{
+                // Filter noise and very small objects
+                if ( (bb.width()*bb.height()) > 1000 )
+                {
                     blobId++;
-                    tmpBlob.pixelCount = size;
-                    tmpBlob.isolatedImage = blobImg;
-                    this -> blobs.push_back(tmpBlob);
+                    Blob b;
+                    b.avrDepth = avrDepth;
+                    b.pixelCount = size;
+                    b.boundingBox = bb;
+                    b.isolatedImage = blobImg.copy(b.boundingBox);
+
+                    this -> blobs.push_back(b);
+
                 }
             }
 
@@ -70,7 +83,8 @@ void BlobDetector::update(const QImage &binaryImage)
 
         }
     }
-    return;
+
+    qSort(this->blobs);
 }
 
 
@@ -87,69 +101,119 @@ const Blob &BlobDetector::getBlob(int index) const
     return this->blobs.at(index);
 }
 
-void BlobDetector::grassFire(const QImage &image, QImage &blobImg, int x, int y, QColor color, int &size){
-    size++;
+int BlobDetector::grassFire(const QImage &image, QImage &blobImg, const float *depthValues, int x, int y, QColor color, QRect& boundingBox, float& avrDepth)
+{
+    static QList<QPoint> pendingPixels;
 
-    //Burn pixel
-    blobImg.setPixel(x, y, color.rgb());
+    pendingPixels.clear();
 
-    //Kernal 4-connectivity
-    //1
-    if ((qGray(image.pixel(x+1, y)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x+1, y, color, size);
-    }
-    //2
-    if ((qGray(image.pixel(x, y+1)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x, y+1, color, size);
-    }
-    //3
-    if ((qGray(image.pixel(x-1, y)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x-1, y, color, size);
-    }
-    //4
-    if ((qGray(image.pixel(x, y-1)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x, y-1, color, size);
-    }
+    pendingPixels.push_back(QPoint(x,y));
 
-    return;
+    int size = 0;
+    boundingBox.setX(x);
+    boundingBox.setY(y);
+    boundingBox.setWidth(1);
+    boundingBox.setHeight(1);
 
-    /*
-    //Kernal 8-connectivity
-    //1
-    if ((qGray(image.pixel(x+1, y)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x+1, y, color, size);
-    }
-    //2
-    if((qGray(image.pixel(x+1, y+1)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x+1, y+1, color, size);
-    }
-    //3
-    if ((qGray(image.pixel(x, y+1)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x, y+1, color, size);
-    }
-    //4
-    if ((qGray(image.pixel(x-1, y+1)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x-1, y+1, color, size);
-    }
-    //5
-    if ((qGray(image.pixel(x-1, y)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x-1, y, color, size);
-    }
-    //6
-    if ((qGray(image.pixel(x-1, y-1)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x-1, y-1, color, size);
-    }
-    //7
-    if ((qGray(image.pixel(x, y-1)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x, y-1, color, size);
-    }
+    while( pendingPixels.size() > 0 )
+    {
+        size++;
+        QPoint p = pendingPixels.back();
+        pendingPixels.pop_back();
 
-    //8
-    if ((qGray(image.pixel(x+1, y-1)) == 255) && ((x >= 0 && x <= image.size().width()) && (y >= 0 && y <= image.size().height()))){
-        grassFire(image, blobImg, x+1, y-1, color, size);
+        // Update bounding box
+        if( p.x() < boundingBox.left() )
+            boundingBox.setLeft(p.x());
+
+        if( p.y() < boundingBox.top() )
+            boundingBox.setTop(p.y());
+
+        if( p.x() > boundingBox.right() )
+            boundingBox.setRight(p.x());
+
+        if( p.y() > boundingBox.bottom() )
+            boundingBox.setBottom(p.y());
+
+        //Burn pixel
+        blobImg.setPixel(p.x(), p.y(), color.rgb());
+        avrDepth += depthValues[p.x() + p.y()*image.width()];
+
+        //Kernal 4-connectivity
+        //1
+        QPoint tp = QPoint(p.x()+1, p.y());
+        if( testPixel(image, blobImg, depthValues, tp) )
+            pendingPixels.push_back(tp);
+
+        //2
+        tp = QPoint(p.x(), p.y()+1);
+        if( testPixel(image, blobImg, depthValues, tp) )
+            pendingPixels.push_back(tp);
+
+        //3
+        tp = QPoint(p.x()-1, p.y());
+        if( testPixel(image, blobImg, depthValues, tp) )
+            pendingPixels.push_back(tp);
+
+        //4
+        tp = QPoint(p.x(), p.y()-1);
+        if( testPixel(image, blobImg, depthValues, tp) )
+            pendingPixels.push_back(tp);
+
     }
 
-    return;
-    */
+    avrDepth /= size;
+
+    return size;
+
 }
 
+bool BlobDetector::testPixel(const QImage &image, QImage &blobImg, const float *depthValues, const QPoint &p)
+{
+    static uint black = QColor(Qt::white).rgb();
+
+    if( p.x() < 0 || p.x() >= image.width() || p.y() < 0 || p.y() >= image.height() )
+        return false;
+
+    // Eventually check depth values
+    if( depthValues )
+    {
+        QPoint dp(p.x(), p.y());
+        float referenceDepth = depthValues[dp.x() + dp.y()*image.width()];
+
+        dp = QPoint(p.x() + 1, p.y());
+        if( dp.x() >= 0 && dp.y() >= 0 && dp.x() < image.width() && dp.y() < image.height() )
+            if( fabsf(depthValues[dp.x() + dp.y()*image.width()] - referenceDepth) > depthThreashold )
+                return false;
+
+        dp = QPoint(p.x() - 1, p.y());
+        if( dp.x() >= 0 && dp.y() >= 0 && dp.x() < image.width() && dp.y() < image.height() )
+            if( fabsf(depthValues[dp.x() + dp.y()*image.width()] - referenceDepth) > depthThreashold )
+                return false;
+
+        dp = QPoint(p.x(), p.y() + 1);
+        if( dp.x() >= 0 && dp.y() >= 0 && dp.x() < image.width() && dp.y() < image.height() )
+            if( fabsf(depthValues[dp.x() + dp.y()*image.width()] - referenceDepth) > depthThreashold )
+                return false;
+
+        dp = QPoint(p.x(), p.y() - 1);
+        if( dp.x() >= 0 && dp.y() >= 0 && dp.x() < image.width() && dp.y() < image.height() )
+            if( fabsf(depthValues[dp.x() + dp.y()*image.width()] - referenceDepth) > depthThreashold )
+                return false;
+
+    }
+
+    if (qGray(image.pixel(p.x(), p.y())) > 127 &&
+            blobImg.pixel(p.x(), p.y()) == black )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
+
+bool Blob::operator <(const Blob &blob) const
+{
+    return this->pixelCount > blob.pixelCount;
+}

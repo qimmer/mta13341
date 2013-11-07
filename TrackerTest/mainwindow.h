@@ -43,12 +43,19 @@ private slots:
 
     void on_sliFar_valueChanged(int value);
 
+    void on_horizontalSlider_valueChanged(int value);
+
+    void on_sliDepthThreashold_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
     QTimer timer;
     Sensor sensor;
     VelocityMapper velMapper;
     BlobDetector blobDetector;
+    QImage binaryDepth;
+    int currentBlobId;
+    float depthThreashold;
 };
 
 #endif // MAINWINDOW_H
