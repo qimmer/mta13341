@@ -10,6 +10,7 @@ struct Blob
     QPoint center;
     float circularity;
     QImage isolatedImage;
+    int pixelCount;
 };
 
 class TRACKINGSHARED_EXPORT BlobDetector
@@ -21,6 +22,8 @@ public:
 
     int getNumBlobs() const;
     const Blob& getBlob(int index) const;
+
+    Blob grassFire(QImage &image, QImage &blobImg, int x, int y, QColor color, int &size);
 
 private:
     QList<Blob> blobs;
