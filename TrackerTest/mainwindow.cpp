@@ -57,7 +57,19 @@ void MainWindow::update()
     if( sensor.update() )
     {
         velMapper.update(sensor.getDepthData(), sensor.getVelocityData(), sensor.getDepthImage().size());
-        ui->imgOne->setPixmap(QPixmap::fromImage(velMapper.getBinaryImage()));
-        ui->orig->setPixmap(QPixmap::fromImage(sensor.getDepthImage()));
+
+        if( velMapper.getThreashold() == 0 )
+            ui->imgVelocity->setPixmap(QPixmap::fromImage(velMapper.getVelocityMap()));
+        else
+            ui->imgVelocity->setPixmap(QPixmap::fromImage(velMapper.getBinaryImage()));
+
+        ui->imgDepth->setPixmap(QPixmap::fromImage(sensor.getDepthImage()));
+
+        blobDetector.update(sensor.getDepthImage());
+
+        if( blobDetector.getNumBlobs() > 0 )
+            ui->imgBlob->setPixmap(QPixmap::fromImage(blobDetector.getBlob(0).isolatedImage));
+        else
+            ui->imgBlob->setText("NO BLOB DETECTED");
     }
 }

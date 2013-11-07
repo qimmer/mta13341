@@ -85,6 +85,11 @@ const QImage &VelocityMapper::getBinaryImage() const
     return binary;
 }
 
+int VelocityMapper::getThreashold() const
+{
+    return this->threashold;
+}
+
 void VelocityMapper::setMinima(int minima)
 {
     this->minima = minima;

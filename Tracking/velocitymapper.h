@@ -15,6 +15,8 @@ public:
     const QImage& getVelocityMap() const;
     const QImage& getBinaryImage() const;
 
+    int getThreashold() const;
+
 public slots:
     void setMinima(int minima);
     void setMaxima(int maxima);

@@ -5,6 +5,7 @@
 #include <QTimer>
 #include "sensor.h"
 #include "velocitymapper.h"
+#include "BlobDetector.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,7 @@ private:
     QTimer timer;
     Sensor sensor;
     VelocityMapper velMapper;
+    BlobDetector blobDetector;
 };
 
 #endif // MAINWINDOW_H
