@@ -1,5 +1,7 @@
 #include "velocitymapper.h"
 #include <QColor>
+#include <QFile>
+#include <QDataStream>
 
 VelocityMapper::VelocityMapper() : QObject(0)
 {
@@ -9,63 +11,68 @@ VelocityMapper::VelocityMapper() : QObject(0)
     maxima = 0;
     factor = 0;
     threashold = 0;
+    velocityMap = 0;
 }
 
-void VelocityMapper::update(ushort *depthData, short *velData, const QSize& size)
+VelocityMapper::~VelocityMapper()
 {
+    if( velocityMap )
+        delete[] velocityMap;
+}
 
-    if( intermediate.isNull() )
+void VelocityMapper::update(float *oldDepthData, float *newDepthData, const QSize& size)
+{
+    if( velocityMap == 0 )
+        velocityMap = new float[size.width()*size.height()];
+
+    if( binary.isNull() )
     {
-        intermediate = QImage(size, QImage::Format_ARGB32);
-        intermediate.fill(Qt::black);
-
         binary = QImage(size, QImage::Format_ARGB32);
-        intermediate.fill(Qt::black);
+        binary.fill(Qt::black);
     }
 
-    uchar *interPixels = intermediate.bits();
     uchar *binaryPixels = binary.bits();
 
     for( int x = 0; x < size.width(); ++x )
     {
         for( int y = 0; y < size.height(); ++y )
         {
-            uchar *interRgb = &interPixels[(x+y*size.width())*4];
             uchar *binaryRgb = &binaryPixels[(x+y*size.width())*4];
+            float *velocityPixel = &velocityMap[x+y*size.width()];
 
-            ushort depth = depthData[x + y*size.width()];
+            float oldDepth = oldDepthData[x + y*size.width()];
+            float newDepth = newDepthData[x + y*size.width()];
+            float velocity = -(newDepth - oldDepth);
 
-            if( depth == 0 || depth == 255 )
-            {
-                interRgb[2] = std::max(interRgb[2] - decay, 0);
-                continue;
-            }
+            /*if( oldDepth < 0.00001f ||
+                newDepth < 0.00001f ||
+                oldDepth > 0.99999f ||
+                newDepth > 0.99999f )
+                velocity = 0.0f;*/
 
-            double difference = -((double)velData[x + y*size.width()]);
             if( forwardOnly )
             {
-                if( difference < 0 )
-                    difference = 0;
+                if( velocity < 0 )
+                    velocity = 0.0f;
             }
             else
             {
-                difference = abs(difference);
+                velocity = fabsf(velocity);
             }
-            difference = sqrt(difference);
 
-            if( difference > maxima || difference < minima )
-                difference = 0;
+            if( velocity < minima || velocity > maxima )
+            {
+                velocity = 0.0f;
+            }
+
 
             // Is the changing depth artificial or not moving?
-            if( difference > 0 )
-                interRgb[2] = std::min(interRgb[2] + int((double)difference*(double(factor)/100.0f)), 255);
+            if( velocity > 0.0f )
+                *velocityPixel = std::min(*velocityPixel + velocity*factor, 1.0f);
             else
-                interRgb[2] = std::max(interRgb[2] - decay, 0);
+                *velocityPixel = std::max(*velocityPixel - decay, 0.0f);
 
-            interRgb[0] = interRgb[1] = interRgb[2];
-            interRgb[3] = 255;
-
-            if( interRgb[2] > threashold )
+            if( *velocityPixel > threashold )
                 binaryRgb[0] = binaryRgb[1] = binaryRgb[2] = 255;
             else
                 binaryRgb[0] = binaryRgb[1] = binaryRgb[2] = 0;
@@ -75,9 +82,9 @@ void VelocityMapper::update(ushort *depthData, short *velData, const QSize& size
     }
 }
 
-const QImage &VelocityMapper::getVelocityMap() const
+float *VelocityMapper::getVelocityMap() const
 {
-    return intermediate;
+    return velocityMap;
 }
 
 const QImage &VelocityMapper::getBinaryImage() const
@@ -85,27 +92,52 @@ const QImage &VelocityMapper::getBinaryImage() const
     return binary;
 }
 
-int VelocityMapper::getThreashold() const
+float VelocityMapper::getMinima() const
+{
+    return this->minima;
+}
+
+float VelocityMapper::getMaxima() const
+{
+    return this->maxima;
+}
+
+float VelocityMapper::getDecay() const
+{
+    return this->decay;
+}
+
+float VelocityMapper::getFactor() const
+{
+    return this->factor;
+}
+
+bool VelocityMapper::isForwardOnly() const
+{
+    return this->forwardOnly;
+}
+
+float VelocityMapper::getThreashold() const
 {
     return this->threashold;
 }
 
-void VelocityMapper::setMinima(int minima)
+void VelocityMapper::setMinima(float minima)
 {
     this->minima = minima;
 }
 
-void VelocityMapper::setMaxima(int maxima)
+void VelocityMapper::setMaxima(float maxima)
 {
     this->maxima = maxima;
 }
 
-void VelocityMapper::setDecay(int decay)
+void VelocityMapper::setDecay(float decay)
 {
     this->decay = decay;
 }
 
-void VelocityMapper::setFactor(int factor)
+void VelocityMapper::setFactor(float factor)
 {
     this->factor = factor;
 }
@@ -115,7 +147,7 @@ void VelocityMapper::setForwardOnly(bool fwOnly)
     this->forwardOnly = fwOnly;
 }
 
-void VelocityMapper::setThreashold(int t)
+void VelocityMapper::setThreashold(float t)
 {
     this->threashold = t;
 }

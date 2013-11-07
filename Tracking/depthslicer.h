@@ -10,12 +10,11 @@ class TRACKINGSHARED_EXPORT DepthSlicer
 public:
     DepthSlicer();
 
-    void sliceImage(const QImage& img, int slices);
-
-    const QImage& getSlice(int slice) const;
-
-private:
-    QList<QImage> slices;
+    void sliceDepth(float *pDepthSrc,
+                    float *pDest,
+                    float nearDepth,
+                    float farDepth,
+                    const QSize& size);
 };
 
 #endif // DEPTHSLICER_H

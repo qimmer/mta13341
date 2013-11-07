@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "sensor.h"
 #include <QTimer>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,60 +10,86 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    if( sensor.initialize(0, Medium) )
+    QFile file("save.dat");
+    if( file.exists() )
     {
+        file.open(QFile::ReadOnly);
+
+        float decay, minima, maxima, factor, threashold;
+        ushort nearClip, farClip;
+        bool forwardOnly;
+
+        QDataStream stream(&file);
+        stream >> decay;
+        stream >> minima;
+        stream >> maxima;
+        stream >> factor;
+        stream >> threashold;
+        stream >> forwardOnly;
+        stream >> nearClip;
+        stream >> farClip;
+
+        velMapper.setDecay(decay);
+        velMapper.setMinima(minima);
+        velMapper.setMaxima(maxima);
+        velMapper.setFactor(factor);
+        velMapper.setThreashold(threashold);
+        velMapper.setForwardOnly(forwardOnly);
+        sensor.setNearClip(nearClip);
+        sensor.setFarClip(farClip);
+
+        file.close();
+    }
+
+    if( sensor.initialize(0, Medium) )
+    {        
+        ui->chkForward->setChecked(velMapper.isForwardOnly());
+        ui->sliDecay->setValue(velMapper.getDecay()*10000);
+        ui->sliMinima->setValue(velMapper.getMinima()*3000);
+        ui->sliMaxima->setValue(velMapper.getMaxima()*3000);
+        ui->sliFactor->setValue(velMapper.getFactor()*1000);
+        ui->sliThreashold->setValue(velMapper.getThreashold()*8000);
+        ui->sliNear->setValue(sensor.getNearClip());
+        ui->sliFar->setValue(sensor.getFarClip());
+
         connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-        timer.setInterval(1);
-        timer.start(1);
+        timer.setInterval(10);
+        timer.start(10);
 
-        connect(ui->sliDecay,
-                SIGNAL(valueChanged(int)),
-                &velMapper,
-                SLOT(setDecay(int)));
-
-        connect(ui->sliMinima,
-                SIGNAL(valueChanged(int)),
-                &velMapper,
-                SLOT(setMinima(int)));
-
-        connect(ui->sliMaxima,
-                SIGNAL(valueChanged(int)),
-                &velMapper,
-                SLOT(setMaxima(int)));
-
-        connect(ui->sliFactor,
-                SIGNAL(valueChanged(int)),
-                &velMapper,
-                SLOT(setFactor(int)));
-
-        connect(ui->sliThreashold,
-                SIGNAL(valueChanged(int)),
-                &velMapper,
-                SLOT(setThreashold(int)));
-
-        connect(ui->chkForward,
-                SIGNAL(toggled(bool)),
-                &velMapper,
-                SLOT(setForwardOnly(bool)));
     }
 }
 
 MainWindow::~MainWindow()
-{
+{    
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    QFile file("save.dat");
+
+    file.open(QFile::WriteOnly);
+
+    QDataStream stream(&file);
+    stream << velMapper.getDecay();
+    stream << velMapper.getMinima();
+    stream << velMapper.getMaxima();
+    stream << velMapper.getFactor();
+    stream << velMapper.getThreashold();
+    stream << velMapper.isForwardOnly();
+    stream << sensor.getNearClip();
+    stream << sensor.getFarClip();
+
+    file.close();
 }
 
 void MainWindow::update()
 {
     if( sensor.update() )
     {
-        velMapper.update(sensor.getDepthData(), sensor.getVelocityData(), sensor.getDepthImage().size());
+        velMapper.update(sensor.getPrevDepthData(), sensor.getDepthData(), sensor.getDepthImage().size());
 
-        if( velMapper.getThreashold() == 0 )
-            ui->imgVelocity->setPixmap(QPixmap::fromImage(velMapper.getVelocityMap()));
-        else
-            ui->imgVelocity->setPixmap(QPixmap::fromImage(velMapper.getBinaryImage()));
-
+        ui->imgVelocity->setPixmap(QPixmap::fromImage(velMapper.getBinaryImage()));
         ui->imgDepth->setPixmap(QPixmap::fromImage(sensor.getDepthImage()));
 
         blobDetector.update(sensor.getDepthImage());
@@ -72,4 +99,44 @@ void MainWindow::update()
         else
             ui->imgBlob->setText("NO BLOB DETECTED");
     }
+}
+
+void MainWindow::on_sliMinima_valueChanged(int value)
+{
+    velMapper.setMinima((float)value / 3000.0f);
+}
+
+void MainWindow::on_sliMaxima_valueChanged(int value)
+{
+    velMapper.setMaxima((float)value / 3000.0f);
+}
+
+void MainWindow::on_sliDecay_valueChanged(int value)
+{
+    velMapper.setDecay((float)value / 10000.0f);
+}
+
+void MainWindow::on_sliFactor_valueChanged(int value)
+{
+    velMapper.setFactor((float)value / 1000.0f);
+}
+
+void MainWindow::on_sliThreashold_valueChanged(int value)
+{
+    velMapper.setThreashold((float)value / 8000.0f);
+}
+
+void MainWindow::on_chkForward_toggled(bool checked)
+{
+    velMapper.setForwardOnly(checked);
+}
+
+void MainWindow::on_sliNear_valueChanged(int value)
+{
+    sensor.setNearClip(value);
+}
+
+void MainWindow::on_sliFar_valueChanged(int value)
+{
+    sensor.setFarClip(value);
 }

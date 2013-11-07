@@ -6,38 +6,16 @@ DepthSlicer::DepthSlicer()
 {
 }
 
-void DepthSlicer::sliceImage(const QImage &img, int slices)
+void DepthSlicer::sliceDepth(float *pDepthSrc, float *pDest, float nearDepth, float farDepth, const QSize &size)
 {
-    this->slices.clear();
-
-    for( int i = 0; i < slices; ++i )
+    for( int x = 0; x < size.width(); ++x )
     {
-        QImage slice(img.size(), img.format());
-
-        for( int x = 0; x < img.width(); ++x )
+        for( int y = 0; y < size.height(); ++y )
         {
-            for( int y = 0; y < img.height(); ++y )
-            {
-                QColor pixel = QColor(img.pixel(x, y));
-
-                if( pixel.red() > 0 && pixel.red() < 255 )
-                {
-                    if( pixel.redF() >= i / slices &&
-                        pixel.redF() < (i+1) / slices )
-                        slice.setPixel(x, y, pixel.rgb());
-                    else
-                        slice.setPixel(x, y, QColor(0, 0, 0).rgb());
-                }
-            }
+            if( pDepthSrc[x + y*size.width()] > nearDepth && pDepthSrc[x + y*size.width()] < farDepth )
+                pDest[x + y*size.width()] = pDepthSrc[x + y*size.width()];
+            else
+                pDest[x + y*size.width()] = 0.0f;
         }
-
-        this->slices.push_back(slice);
     }
-}
-
-const QImage &DepthSlicer::getSlice(int slice) const
-{
-    Q_ASSERT(slice < slices.count() && "Slice ID out of range");
-
-    return slices.at(slice);
 }

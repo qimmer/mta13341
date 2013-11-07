@@ -23,7 +23,7 @@ public:
     int getNumBlobs() const;
     const Blob& getBlob(int index) const;
 
-    Blob grassFire(QImage &image, QImage &blobImg, int x, int y, QColor color, int &size);
+    void grassFire(const QImage &image, QImage &blobImg, int x, int y, QColor color, int &size);
 
 private:
     QList<Blob> blobs;

@@ -9,25 +9,32 @@ class TRACKINGSHARED_EXPORT VelocityMapper : public QObject
     Q_OBJECT
 public:
     explicit VelocityMapper();
+    virtual ~VelocityMapper();
 
-    void update(ushort *depthData, short *velData, const QSize& size);
+    void update(float *oldDepthData, float *newDepthData, const QSize& size);
 
-    const QImage& getVelocityMap() const;
+    float * getVelocityMap() const;
     const QImage& getBinaryImage() const;
 
-    int getThreashold() const;
+    float getMinima() const;
+    float getMaxima() const;
+    float getDecay() const;
+    float getFactor() const;
+    bool isForwardOnly() const;
+    float getThreashold() const;
 
 public slots:
-    void setMinima(int minima);
-    void setMaxima(int maxima);
-    void setDecay(int decay);
-    void setFactor(int factor);
+    void setMinima(float minima);
+    void setMaxima(float maxima);
+    void setDecay(float decay);
+    void setFactor(float factor);
     void setForwardOnly(bool fwOnly);
-    void setThreashold(int t);
+    void setThreashold(float t);
 
 private:
-    QImage intermediate, binary;
-    int minima, maxima, decay, factor, threashold;
+    QImage binary;
+    float *velocityMap;
+    float minima, maxima, decay, factor, threashold;
     bool forwardOnly;
 
 };

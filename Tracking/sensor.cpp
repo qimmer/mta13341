@@ -6,7 +6,8 @@
 Sensor::Sensor()
 {
     sensor = 0;
-
+    nearClip = 1;
+    farClip = USHRT_MAX-500;
 }
 
 Sensor::~Sensor()
@@ -16,7 +17,6 @@ Sensor::~Sensor()
 
     delete[] depthData;
     delete[] oldDepthData;
-    delete[] velData;
 
     sensor = 0;
 }
@@ -70,12 +70,10 @@ bool Sensor::initialize(int sensorId, SensorResolution res)
         imgHeight = 60;
     }
 
-    depthData = new USHORT[imgWidth*imgHeight];
-    oldDepthData = new USHORT[imgWidth*imgHeight];
-    velData = new short[imgWidth*imgHeight];
+    depthData = new float[imgWidth*imgHeight];
+    oldDepthData = new float[imgWidth*imgHeight];
     memset(depthData, 0, sizeof(USHORT)*imgWidth*imgHeight);
     memset(oldDepthData, 0, sizeof(USHORT)*imgWidth*imgHeight);
-    memset(velData, 0, sizeof(USHORT)*imgWidth*imgHeight);
 
     depthImage = QImage(imgWidth, imgHeight, QImage::Format_ARGB32);
 
@@ -95,38 +93,26 @@ bool Sensor::update()
 
     if (LockedRect.Pitch != 0)
     {
-        const USHORT* curr = (const USHORT*) LockedRect.pBits;
+        const USHORT* rawDepth = (const USHORT*) LockedRect.pBits;
 
-        memcpy(oldDepthData, depthData,(imgWidth*imgHeight)*sizeof(USHORT));
-        memcpy(depthData, curr, (imgWidth*imgHeight)*sizeof(USHORT));
+        memcpy(oldDepthData, depthData,(imgWidth*imgHeight)*sizeof(float));
 
         for( int x = 0; x < imgWidth; ++x )
         {
             for( int y = 0; y < imgHeight; ++y )
             {
-                USHORT depth = depthData[x + y*imgWidth];
+                USHORT depth = rawDepth[x + y*imgWidth];
 
-
-                int diff = int(depthData[x + y*imgWidth]) - int(oldDepthData[x + y*imgWidth]);
-
-                if( depthData[x + y*imgWidth] == 0 ||
-                    depthData[x + y*imgWidth] > SHRT_MAX ||
-                    oldDepthData[x + y*imgWidth] == 0 ||
-                    oldDepthData[x + y*imgWidth] > SHRT_MAX )
+                if( depth >= nearClip && depth < farClip )
                 {
-                    diff = 0;
+                    depthData[x + y*imgWidth] = float((double)depth / USHRT_MAX);
                 }
+                else
+                    depthData[x + y*imgWidth] = 0.0f;
 
-                velData[x + y*imgWidth] = diff;
-
-                if( depth > SHRT_MAX-500 )
-                    depth = 0;
-
-                depth = int((double)(depth) / USHRT_MAX * 255);
-
-                (&depthImage.bits()[(x + y*imgWidth)*4])[2] = depth;
-                (&depthImage.bits()[(x + y*imgWidth)*4])[0] = depth;
-                (&depthImage.bits()[(x + y*imgWidth)*4])[1] = depth;
+                (&depthImage.bits()[(x + y*imgWidth)*4])[2] = depthData[x + y*imgWidth]*255;
+                (&depthImage.bits()[(x + y*imgWidth)*4])[0] = depthData[x + y*imgWidth]*255;
+                (&depthImage.bits()[(x + y*imgWidth)*4])[1] = depthData[x + y*imgWidth]*255;
                 (&depthImage.bits()[(x + y*imgWidth)*4])[3] = 255;
             }
         }
@@ -138,14 +124,34 @@ bool Sensor::update()
     return true;
 }
 
-USHORT *Sensor::getDepthData()
+float *Sensor::getDepthData()
 {
     return depthData;
 }
 
-short *Sensor::getVelocityData()
+float *Sensor::getPrevDepthData()
 {
-    return velData;
+    return oldDepthData;
+}
+
+void Sensor::setNearClip(ushort nearClip)
+{
+    this->nearClip = nearClip;
+}
+
+void Sensor::setFarClip(ushort farClip)
+{
+    this->farClip = farClip;
+}
+
+ushort Sensor::getNearClip() const
+{
+    return nearClip;
+}
+
+ushort Sensor::getFarClip() const
+{
+    return farClip;
 }
 
 const QImage &Sensor::getDepthImage() const

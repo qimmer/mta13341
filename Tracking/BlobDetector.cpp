@@ -1,4 +1,5 @@
 #include "BlobDetector.h"
+#include <QColor>
 
 BlobDetector::BlobDetector()
 {
@@ -39,7 +40,7 @@ void BlobDetector::update(const QImage &binaryImage)
         for(int x = 0; x < binaryImage.size().width(); x++){
 
             //Grassfire algorithm to find BLOB.
-            if ((qGray(binaryImage.pixel(x, y)) == 255) && (qGray(blobImg.pixel(x, y)) == 0)){
+            if (binaryImage.pixel(x, y) == QColor(Qt::white).rgb() && blobImg.pixel(x, y) == QColor(Qt::black).rgb()){
                 QImage tmpImg = blobImg;
                 Blob tmpBlob;
 
@@ -52,6 +53,7 @@ void BlobDetector::update(const QImage &binaryImage)
                 else{
                     blobId++;
                     tmpBlob.pixelCount = size;
+                    tmpBlob.isolatedImage = blobImg;
                     this -> blobs.push_back(tmpBlob);
                 }
             }
@@ -85,11 +87,10 @@ const Blob &BlobDetector::getBlob(int index) const
     return this->blobs.at(index);
 }
 
-Blob grassFire(QImage &image, QImage &blobImg, int x, int y, QColor color, int &size){
+void BlobDetector::grassFire(const QImage &image, QImage &blobImg, int x, int y, QColor color, int &size){
     size++;
 
-    //Burn pixel in both images
-    image.setPixel(x, y, color.rgb());
+    //Burn pixel
     blobImg.setPixel(x, y, color.rgb());
 
     //Kernal 4-connectivity

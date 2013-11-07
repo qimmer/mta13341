@@ -28,18 +28,24 @@ public:
 
     bool update();
 
-    USHORT* getDepthData();
-    short* getVelocityData();
+    float* getDepthData();
+    float* getPrevDepthData();
+
+    void setNearClip(ushort nearClip);
+    void setFarClip(ushort farClip);
+    ushort getNearClip() const;
+    ushort getFarClip() const;
+
     const QImage& getDepthImage() const;
 
 
 private:
     int imgWidth, imgHeight;
-    USHORT *depthData, *oldDepthData;
-    short *velData;
+    float *depthData, *oldDepthData;
     QImage depthImage;
     HANDLE rgbStream;              // The identifier of the Kinect's RGB Camera
     INuiSensor* sensor;            // The kinect sensor
+    ushort nearClip, farClip;
 };
 
 #endif // SENSOR_H

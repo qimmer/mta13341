@@ -20,8 +20,28 @@ public:
 
     ~MainWindow();
 
+protected:
+    virtual void closeEvent(QCloseEvent *e);
+
 public slots:
     void update();
+
+private slots:
+    void on_sliMinima_valueChanged(int value);
+
+    void on_sliMaxima_valueChanged(int value);
+
+    void on_sliDecay_valueChanged(int value);
+
+    void on_sliFactor_valueChanged(int value);
+
+    void on_sliThreashold_valueChanged(int value);
+
+    void on_chkForward_toggled(bool checked);
+
+    void on_sliNear_valueChanged(int value);
+
+    void on_sliFar_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;
