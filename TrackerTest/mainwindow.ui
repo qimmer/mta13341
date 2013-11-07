@@ -66,6 +66,26 @@ color: rgb(128, 255, 132);</string>
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Minimum Size (in pixels):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="sliMinSize">
+            <property name="minimum">
+             <number>500</number>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="label_12">
             <property name="text">
              <string>Depth Threashold</string>
@@ -75,7 +95,7 @@ color: rgb(128, 255, 132);</string>
           <item>
            <widget class="QSlider" name="sliDepthThreashold">
             <property name="maximum">
-             <number>100</number>
+             <number>500</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>

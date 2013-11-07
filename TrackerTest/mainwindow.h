@@ -47,6 +47,8 @@ private slots:
 
     void on_sliDepthThreashold_valueChanged(int value);
 
+    void on_sliMinSize_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
     QTimer timer;
@@ -56,6 +58,7 @@ private:
     QImage binaryDepth;
     int currentBlobId;
     float depthThreashold;
+    int minSize;
 };
 
 #endif // MAINWINDOW_H

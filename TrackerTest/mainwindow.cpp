@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
         stream >> nearClip;
         stream >> farClip;
         stream >> this->depthThreashold;
+        stream >> this->minSize;
 
         velMapper.setDecay(decay);
         velMapper.setMinima(minima);
@@ -59,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->sliNear->setValue(sensor.getNearClip());
         ui->sliFar->setValue(sensor.getFarClip());
         ui->sliDepthThreashold->setValue(this->depthThreashold * 1000);
-
+        ui->sliMinSize->setValue(this->minSize);
 
         binaryDepth = QImage(sensor.getDepthImage().size(), QImage::Format_ARGB32);
 
@@ -91,6 +92,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
     stream << sensor.getNearClip();
     stream << sensor.getFarClip();
     stream << this->depthThreashold;
+    stream << this->minSize;
 
     file.close();
 }
@@ -106,7 +108,7 @@ void MainWindow::update()
         ui->imgVelocity->setPixmap(QPixmap::fromImage(velMapper.getBinaryImage()));
         ui->imgDepth->setPixmap(QPixmap::fromImage(binaryDepth));
 
-        blobDetector.update(binaryDepth, sensor.getDepthData(), depthThreashold);
+        blobDetector.update(binaryDepth, sensor.getDepthData(), this->depthThreashold, this->minSize);
 
         if( blobDetector.getNumBlobs() > currentBlobId )
         {
@@ -166,4 +168,9 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
 void MainWindow::on_sliDepthThreashold_valueChanged(int value)
 {
     this->depthThreashold = float(value) / 1000.0f;
+}
+
+void MainWindow::on_sliMinSize_valueChanged(int value)
+{
+    this->minSize = value;
 }

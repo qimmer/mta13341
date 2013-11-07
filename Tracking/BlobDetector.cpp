@@ -5,7 +5,7 @@ BlobDetector::BlobDetector()
 {
 }
 
-void BlobDetector::update(const QImage &binaryImage, const float *depthValues, float depthThreashold)
+void BlobDetector::update(const QImage &binaryImage, const float *depthValues, float depthThreashold, int minSize)
 {
     this->depthThreashold = depthThreashold;
 
@@ -32,10 +32,10 @@ void BlobDetector::update(const QImage &binaryImage, const float *depthValues, f
     memset(blobImg.bits(), 255, blobImg.width()*blobImg.height()*4);
 
     QColor colors[] = {QColor(Qt::blue),
-                       QColor(Qt::green),
-                       QColor(Qt::magenta),
-                       QColor(Qt::red),
-                       QColor(Qt::yellow)};
+                       QColor(Qt::blue),
+                       QColor(Qt::blue),
+                       QColor(Qt::blue),
+                       QColor(Qt::blue)};
 
     int blobId = 0;
 
@@ -57,7 +57,7 @@ void BlobDetector::update(const QImage &binaryImage, const float *depthValues, f
                     largestBlob = size;
 
                 // Filter noise and very small objects
-                if ( (bb.width()*bb.height()) > 1000 )
+                if ( size >= minSize )
                 {
                     blobId++;
                     Blob b;
@@ -215,5 +215,5 @@ bool BlobDetector::testPixel(const QImage &image, QImage &blobImg, const float *
 
 bool Blob::operator <(const Blob &blob) const
 {
-    return this->pixelCount > blob.pixelCount;
+    return this->avrDepth < blob.avrDepth;
 }

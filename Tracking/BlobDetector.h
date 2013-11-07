@@ -19,7 +19,7 @@ class TRACKINGSHARED_EXPORT BlobDetector
 public:
     BlobDetector();
 
-    void update(const QImage& binaryImage, const float *depthValues = 0, float depthThreashold = 0.0f);
+    void update(const QImage& binaryImage, const float *depthValues = 0, float depthThreashold = 0.0f, int minSize = 2000);
 
     int getNumBlobs() const;
     const Blob& getBlob(int index) const;
