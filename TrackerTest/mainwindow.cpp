@@ -35,12 +35,12 @@ MainWindow::MainWindow(QWidget *parent) :
         stream >> this->depthThreashold;
         stream >> this->minSize;
 
-        velMapper.setDecay(decay);
-        velMapper.setMinima(minima);
-        velMapper.setMaxima(maxima);
-        velMapper.setFactor(factor);
-        velMapper.setThreashold(threashold);
-        velMapper.setForwardOnly(forwardOnly);
+        sensor.getVelocityMapper()->setDecay(decay);
+        sensor.getVelocityMapper()->setMinima(minima);
+        sensor.getVelocityMapper()->setMaxima(maxima);
+        sensor.getVelocityMapper()->setFactor(factor);
+        sensor.getVelocityMapper()->setThreashold(threashold);
+        sensor.getVelocityMapper()->setForwardOnly(forwardOnly);
         sensor.setNearClip(nearClip);
         sensor.setFarClip(farClip);
 
@@ -51,12 +51,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if( sensor.initialize(0, Medium) )
     {        
-        ui->chkForward->setChecked(velMapper.isForwardOnly());
-        ui->sliDecay->setValue(velMapper.getDecay()*10000);
-        ui->sliMinima->setValue(velMapper.getMinima()*3000);
-        ui->sliMaxima->setValue(velMapper.getMaxima()*3000);
-        ui->sliFactor->setValue(velMapper.getFactor()*1000);
-        ui->sliThreashold->setValue(velMapper.getThreashold()*8000);
+        ui->chkForward->setChecked(sensor.getVelocityMapper()->isForwardOnly());
+        ui->sliDecay->setValue(sensor.getVelocityMapper()->getDecay()*10000);
+        ui->sliMinima->setValue(sensor.getVelocityMapper()->getMinima()*3000);
+        ui->sliMaxima->setValue(sensor.getVelocityMapper()->getMaxima()*3000);
+        ui->sliFactor->setValue(sensor.getVelocityMapper()->getFactor()*1000);
+        ui->sliThreashold->setValue(sensor.getVelocityMapper()->getThreashold()*8000);
         ui->sliNear->setValue(sensor.getNearClip());
         ui->sliFar->setValue(sensor.getFarClip());
         ui->sliDepthThreashold->setValue(this->depthThreashold * 1000);
@@ -67,8 +67,13 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
         timer.setInterval(10);
         timer.start(10);
-
     }
+
+    ui->cmbDebugImage->addItem("Depth");
+    ui->cmbDebugImage->addItem("Binary Depth");
+    ui->cmbDebugImage->addItem("Blob");
+    ui->cmbDebugImage->addItem("Blob Velocity");
+
 }
 
 MainWindow::~MainWindow()
@@ -83,12 +88,12 @@ void MainWindow::closeEvent(QCloseEvent *e)
     file.open(QFile::WriteOnly);
 
     QDataStream stream(&file);
-    stream << velMapper.getDecay();
-    stream << velMapper.getMinima();
-    stream << velMapper.getMaxima();
-    stream << velMapper.getFactor();
-    stream << velMapper.getThreashold();
-    stream << velMapper.isForwardOnly();
+    stream << sensor.getVelocityMapper()->getDecay();
+    stream << sensor.getVelocityMapper()->getMinima();
+    stream << sensor.getVelocityMapper()->getMaxima();
+    stream << sensor.getVelocityMapper()->getFactor();
+    stream << sensor.getVelocityMapper()->getThreashold();
+    stream << sensor.getVelocityMapper()->isForwardOnly();
     stream << sensor.getNearClip();
     stream << sensor.getFarClip();
     stream << this->depthThreashold;
@@ -101,53 +106,68 @@ void MainWindow::update()
 {
     if( sensor.update() )
     {
-        velMapper.update(sensor.getPrevDepthData(), sensor.getDepthData(), sensor.getDepthImage().size());
-
+        QImage depthImage;
+        Utility::depthToImage(sensor.getDepthData(), &depthImage);
         Utility::depthToBinary(sensor.getDepthData(), &binaryDepth);
 
-        ui->imgVelocity->setPixmap(QPixmap::fromImage(velMapper.getBinaryImage()));
-        ui->imgDepth->setPixmap(QPixmap::fromImage(binaryDepth));
+        debugImages["Depth"] = depthImage;
+        debugImages["Binary Depth"] = binaryDepth;
 
-        blobDetector.update(binaryDepth, sensor.getDepthData(), this->depthThreashold, this->minSize);
+        blobDetector.update(
+                    binaryDepth,
+                    sensor.getVelocityMapper()->getBinaryImage(),
+                    sensor.getDepthData(),
+                    this->depthThreashold,
+                    this->minSize);
 
         if( blobDetector.getNumBlobs() > currentBlobId )
         {
-            ui->imgBlob->setPixmap(QPixmap::fromImage(blobDetector.getBlob(currentBlobId).isolatedImage));
-            ui->lblAvrDepth->setText(QString("Blob average depth value: ") + QString::number(blobDetector.getBlob(currentBlobId).avrDepth));
+            debugImages["Blob"] = blobDetector.getBlob(currentBlobId).isolatedImage;
+            debugImages["Blob Velocity"] = blobDetector.getBlob(currentBlobId).velocityImage;
         }
         else
-            ui->imgBlob->setText("NO BLOB DETECTED");
+        {
+            debugImages["Blob"] = depthImage;
+            debugImages["Blob Velocity"] = depthImage;
+        }
+
+        if( debugImages.contains(currentDebugImage) )
+        {
+            ui->imgDebug->setPixmap(QPixmap::fromImage(debugImages[currentDebugImage]));
+        }
+
+
     }
 }
 
 void MainWindow::on_sliMinima_valueChanged(int value)
 {
-    velMapper.setMinima((float)value / 3000.0f);
+    sensor.getVelocityMapper()->setMinima((float)value / 3000.0f);
 }
 
 void MainWindow::on_sliMaxima_valueChanged(int value)
 {
-    velMapper.setMaxima((float)value / 3000.0f);
+    sensor.getVelocityMapper()->setMaxima((float)value / 3000.0f);
 }
 
 void MainWindow::on_sliDecay_valueChanged(int value)
 {
-    velMapper.setDecay((float)value / 10000.0f);
+    sensor.getVelocityMapper()->setDecay((float)value / 10000.0f);
 }
 
 void MainWindow::on_sliFactor_valueChanged(int value)
 {
-    velMapper.setFactor((float)value / 1000.0f);
+    sensor.getVelocityMapper()->setFactor((float)value / 1000.0f);
 }
 
 void MainWindow::on_sliThreashold_valueChanged(int value)
 {
-    velMapper.setThreashold((float)value / 8000.0f);
+    sensor.getVelocityMapper()->setThreashold((float)value / 8000.0f);
 }
 
 void MainWindow::on_chkForward_toggled(bool checked)
 {
-    velMapper.setForwardOnly(checked);
+    sensor.getVelocityMapper()->setForwardOnly(checked);
 }
 
 void MainWindow::on_sliNear_valueChanged(int value)
@@ -173,4 +193,9 @@ void MainWindow::on_sliDepthThreashold_valueChanged(int value)
 void MainWindow::on_sliMinSize_valueChanged(int value)
 {
     this->minSize = value;
+}
+
+void MainWindow::on_cmbDebugImage_currentTextChanged(const QString &arg1)
+{
+    currentDebugImage = arg1;
 }

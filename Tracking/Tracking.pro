@@ -30,7 +30,8 @@ SOURCES += tracking.cpp \
     playertracker.cpp \
     velocitymapper.cpp \
     BlobDetector.cpp \
-    utility.cpp
+    utility.cpp \
+    player.cpp
 
 HEADERS += tracking.h\
         tracking_global.h \
@@ -38,7 +39,8 @@ HEADERS += tracking.h\
     playertracker.h \
     velocitymapper.h \
     BlobDetector.h \
-    utility.h
+    utility.h \
+    player.h
 
 unix:!symbian {
     maemo5 {

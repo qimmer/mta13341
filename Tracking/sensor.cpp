@@ -121,6 +121,8 @@ bool Sensor::update()
     texture->UnlockRect(0);
     sensor->NuiImageStreamReleaseFrame(rgbStream, &imageFrame);
 
+    velMapper.update(depthData, oldDepthData, depthImage.size());
+
     return true;
 }
 
@@ -157,4 +159,9 @@ ushort Sensor::getFarClip() const
 const QImage &Sensor::getDepthImage() const
 {
     return depthImage;
+}
+
+VelocityMapper *Sensor::getVelocityMapper()
+{
+    return &velMapper;
 }

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QMap>
 #include "sensor.h"
 #include "velocitymapper.h"
 #include "BlobDetector.h"
@@ -49,16 +50,20 @@ private slots:
 
     void on_sliMinSize_valueChanged(int value);
 
+    void on_cmbDebugImage_currentTextChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     QTimer timer;
     Sensor sensor;
-    VelocityMapper velMapper;
     BlobDetector blobDetector;
     QImage binaryDepth;
     int currentBlobId;
     float depthThreashold;
     int minSize;
+    QString currentDebugImage;
+
+    QMap<QString, QImage> debugImages;
 };
 
 #endif // MAINWINDOW_H

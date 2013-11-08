@@ -11,6 +11,8 @@
 #include <NuiSensor.h>
 #include <QImage>
 
+#include "velocitymapper.h"
+
 enum SensorResolution
 {
     High,
@@ -38,6 +40,7 @@ public:
 
     const QImage& getDepthImage() const;
 
+    VelocityMapper *getVelocityMapper();
 
 private:
     int imgWidth, imgHeight;
@@ -46,6 +49,7 @@ private:
     HANDLE rgbStream;              // The identifier of the Kinect's RGB Camera
     INuiSensor* sensor;            // The kinect sensor
     ushort nearClip, farClip;
+    VelocityMapper velMapper;
 };
 
 #endif // SENSOR_H

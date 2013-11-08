@@ -5,37 +5,27 @@ BlobDetector::BlobDetector()
 {
 }
 
-void BlobDetector::update(const QImage &binaryImage, const float *depthValues, float depthThreashold, int minSize)
+void BlobDetector::update(const QImage &binaryImage, const QImage& velocityImage, const float *depthValues, float depthThreashold, float minSize)
 {
     this->depthThreashold = depthThreashold;
 
-    int largestBlob = 0;
     // Empty the blob container
     this->blobs.clear();
 
-    /* Add found blobs to the container here.
-     * Example: Adding a blob to the container
-     * GOD ARBEJDSLYST! :-D
-
-    Blob tempBlob;
-    tempBlob.boundingBox = QSize(100, 150);
-    tempBlob.center = QPoint(154, 120);
-    tempBlob.circularity = 0.56f; // 56 %
-    tempBlob.isolatedImage = imageWithOnlyTheBlobInside;
-
-    this->blobs.push_back(tempBlob);
-    */
-
     //Makes an empty blobImg, same size and format as the binaryImage
     QImage blobImg(binaryImage.size(), binaryImage.format());
-    //blobImg.fill(QColor(Qt::black));
+
+    //Fills the image with pure white opaque pixels
     memset(blobImg.bits(), 255, blobImg.width()*blobImg.height()*4);
 
     QColor colors[] = {QColor(Qt::blue),
-                       QColor(Qt::blue),
-                       QColor(Qt::blue),
-                       QColor(Qt::blue),
-                       QColor(Qt::blue)};
+                       QColor(Qt::red),
+                       QColor(Qt::green),
+                       QColor(Qt::yellow),
+                       QColor(Qt::magenta),
+                       QColor(Qt::darkBlue),
+                       QColor(Qt::cyan),
+                       QColor(Qt::darkGreen)};
 
     int blobId = 0;
 
@@ -49,42 +39,36 @@ void BlobDetector::update(const QImage &binaryImage, const float *depthValues, f
             //Grassfire algorithm to find BLOB.
             if (testPixel(binaryImage, blobImg, depthValues, tp))
             {
+                const QColor& blobColor = colors[blobId % 8];
                 QRect bb;
                 float avrDepth = 0.0f;
-                int size = grassFire(binaryImage, blobImg, depthValues, x, y, colors[blobId % 5], bb, avrDepth);
+                int size = grassFire(binaryImage, blobImg, depthValues, x, y, blobColor, bb, avrDepth);
 
-                if( size > largestBlob )
-                    largestBlob = size;
-
-                // Filter noise and very small objects
+                // Filter noise and very small objects. If the object
+                // is big enough, process it!
                 if ( size >= minSize )
                 {
                     blobId++;
+
                     Blob b;
                     b.avrDepth = avrDepth;
-                    b.pixelCount = size;
-                    b.boundingBox = bb;
-                    b.isolatedImage = blobImg.copy(b.boundingBox);
+                    b.size = (float)size/(binaryImage.width()*binaryImage.height());
 
-                    this -> blobs.push_back(b);
+                    // Calculate resolution independant BB
+                    b.boundingBox = QRectF((float)bb.left()/binaryImage.width(),
+                                           (float)bb.top()/binaryImage.height(),
+                                           (float)bb.right()/binaryImage.width(),
+                                           (float)bb.bottom()/binaryImage.height());
+                    b.isolateColor(blobImg.copy(bb), blobColor);
+                    b.isolateVelocity(velocityImage.copy(bb));
+
+                    // Add the BLOB to our BLOB list
+                    this->blobs.push_back(b);
 
                 }
             }
-
-
-            //Area
-
-
-            //Circularity - remove BLOB's which do not have a circle on top
-
-
-            //Bounding box for ROI
-
-
         }
     }
-
-    qSort(this->blobs);
 }
 
 
@@ -211,9 +195,41 @@ bool BlobDetector::testPixel(const QImage &image, QImage &blobImg, const float *
     return false;
 }
 
-
-
-bool Blob::operator <(const Blob &blob) const
+void Blob::isolateColor(const QImage &blobImage, const QColor &blobColor)
 {
-    return this->avrDepth < blob.avrDepth;
+    isolatedImage = blobImage;
+
+    static uint black = QColor(Qt::black).rgb();
+    static uint white = QColor(Qt::white).rgb();
+    uint blobRgb = blobColor.rgb();
+
+    for( int x = 0; x < isolatedImage.width(); ++x )
+        for( int y = 0; y < isolatedImage.height(); ++y )
+        {
+            if( memcmp(&blobImage.bits()[(x + y*blobImage.width())*4], &blobRgb, 4) != 0 )
+            {
+                *((QRgb*)&isolatedImage.bits()[(x + y*isolatedImage.width())*4]) = black;
+            }
+            else
+            {
+                *((QRgb*)&isolatedImage.bits()[(x + y*isolatedImage.width())*4]) = white;
+            }
+        }
+}
+
+void Blob::isolateVelocity(const QImage &velocity)
+{
+    velocityImage = velocity;
+
+    static uint black = QColor(Qt::black).rgb();
+    static uint white = QColor(Qt::white).rgb();
+
+    for( int x = 0; x < isolatedImage.width(); ++x )
+        for( int y = 0; y < isolatedImage.height(); ++y )
+        {
+            if( memcmp(&isolatedImage.bits()[(x + y*isolatedImage.width())*4], &white, 4) != 0 )
+            {
+                *((QRgb*)&velocityImage.bits()[(x + y*isolatedImage.width())*4]) = black;
+            }
+        }
 }
