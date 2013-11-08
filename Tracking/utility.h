@@ -15,6 +15,8 @@ public:
                     const QSize& size);
 
     static void depthToBinary(float *pDepthSrc, QImage *binaryImage);
+
+    static void centerOfPlayer(Blob &blob);
 };
 
 #endif // DEPTHSLICER_H
