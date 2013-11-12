@@ -1,0 +1,10 @@
+D:\LocalGit\mta13341\Unity_Project\Temp\bin\Debug\Assembly-CSharp.dll
+D:\LocalGit\mta13341\Unity_Project\Temp\bin\Debug\Assembly-CSharp.pdb
+D:\LocalGit\mta13341\Unity_Project\Temp\bin\Debug\UnityEditor.dll
+D:\LocalGit\mta13341\Unity_Project\Temp\bin\Debug\UnityEngine.dll
+D:\LocalGit\mta13341\Unity_Project\Temp\bin\Debug\Mono.Cecil.dll
+D:\LocalGit\mta13341\Unity_Project\Temp\bin\Debug\nunit.framework.dll
+D:\LocalGit\mta13341\Unity_Project\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+D:\LocalGit\mta13341\Unity_Project\obj\Debug\Assembly-CSharp-vs.csprojResolveAssemblyReference.cache
+D:\LocalGit\mta13341\Unity_Project\obj\Debug\Assembly-CSharp.dll
+D:\LocalGit\mta13341\Unity_Project\obj\Debug\Assembly-CSharp.pdb
