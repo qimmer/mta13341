@@ -10,9 +10,13 @@ public class MenuObject : MonoBehaviour {
         if (mouseOn == true)
         {
 
-            float scaleX = Mathf.Cos(Time.time) * 0.1F + 1;
-            float scaleY = Mathf.Sin(Time.time) * 0.1F + 1;
-            renderer.material.SetTextureScale("_MainTex", new Vector2(scaleX, scaleY));
+            float scaleX = Mathf.Cos(Time.time) * 0.1F + 1.7F;
+            float scaleY = Mathf.Sin(Time.time) * 0.1F + 1.7F;
+            float rotateX = Mathf.Cos(Time.time);
+            float rotateY = Mathf.Sin(Time.time);
+            transform.localScale = new Vector3(scaleX, scaleY, 0.3895768F);
+            //transform.localRotation = Quaternion.Euler(rotateX, rotateY, 0);
+            transform.localRotation = Quaternion.Euler(new Vector3(rotateX, rotateY, 0.3895768F));
         }
     }
 
@@ -23,7 +27,8 @@ public class MenuObject : MonoBehaviour {
 
     void OnMouseExit()
     {
-        renderer.material.SetTextureScale("_MainTex", new Vector2(1F, 1F));
+        transform.localScale = new Vector3(1.7F, 1.7F, 0.3895768F);
+        transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
         mouseOn = false;
     }
 
