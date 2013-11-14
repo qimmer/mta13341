@@ -48,6 +48,8 @@
      <Compile Include="Assets\Fire_Projectile.cs" />
      <Compile Include="Assets\MenuObject.cs" />
      <Compile Include="Assets\Player_Movement.cs" />
+     <Compile Include="Assets\TrackingManager.cs" />
+     <Compile Include="Assets\TrackingWrapper.cs" />
      <Compile Include="Assets\rayCast.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
