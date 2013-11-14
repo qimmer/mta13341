@@ -43,3 +43,8 @@ void Utility::depthToBinary(float *pDepthSrc, QImage *binaryImage)
         }
     }
 }
+
+void centerOfPlayer(Blob &blob){
+    QImage blob = blob.is
+
+}
