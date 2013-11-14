@@ -1,13 +1,17 @@
 #include "BlobDetector.h"
+#include "utility.h"
 #include <QColor>
+#include <QVector2D>
+#include <QPainter>
 
 BlobDetector::BlobDetector()
 {
 }
 
-void BlobDetector::update(const QImage &binaryImage, const QImage& velocityImage, const float *depthValues, float depthThreashold, float minSize)
+void BlobDetector::update(const QImage &binaryImage, const QImage& velocityImage, const float *depthValues, float depthThreashold, float minSize, float armSize)
 {
     this->depthThreashold = depthThreashold;
+
 
     // Empty the blob container
     this->blobs.clear();
@@ -36,7 +40,7 @@ void BlobDetector::update(const QImage &binaryImage, const QImage& velocityImage
 
             QPoint tp(x,y);
 
-            //Grassfire algorithm to find BLOB.
+            //Grassfire algorithm to find this->
             if (testPixel(binaryImage, blobImg, depthValues, tp))
             {
                 const QColor& blobColor = colors[blobId % 8];
@@ -46,12 +50,12 @@ void BlobDetector::update(const QImage &binaryImage, const QImage& velocityImage
 
                 // Filter noise and very small objects. If the object
                 // is big enough, process it!
-                if ( size >= minSize )
+                if ( (double)size/(binaryImage.width()*binaryImage.height()) >= minSize )
                 {
                     blobId++;
 
                     Blob b;
-                    b.avrDepth = avrDepth;
+                    b.kinectResolutionWidth = binaryImage.width();
                     b.size = (float)size/(binaryImage.width()*binaryImage.height());
 
                     // Calculate resolution independant BB
@@ -60,7 +64,11 @@ void BlobDetector::update(const QImage &binaryImage, const QImage& velocityImage
                                            (float)bb.right()/binaryImage.width(),
                                            (float)bb.bottom()/binaryImage.height());
                     b.isolateColor(blobImg.copy(bb), blobColor);
+                    b.isolatedColor = blobImg.copy(bb);
                     b.isolateVelocity(velocityImage.copy(bb));
+                    b.calculatePosition(armSize);
+                    b.position.setY(avrDepth);
+
 
                     // Add the BLOB to our BLOB list
                     this->blobs.push_back(b);
@@ -78,11 +86,11 @@ int BlobDetector::getNumBlobs() const
     return this->blobs.size();
 }
 
-const Blob &BlobDetector::getBlob(int index) const
+const Blob *BlobDetector::getBlob(int index) const
 {
     Q_ASSERT(index < this->blobs.size());
 
-    return this->blobs.at(index);
+    return &this->blobs[index];
 }
 
 int BlobDetector::grassFire(const QImage &image, QImage &blobImg, const float *depthValues, int x, int y, QColor color, QRect& boundingBox, float& avrDepth)
@@ -219,17 +227,120 @@ void Blob::isolateColor(const QImage &blobImage, const QColor &blobColor)
 
 void Blob::isolateVelocity(const QImage &velocity)
 {
-    velocityImage = velocity;
+    int widthDivider = 4;
+    int heightDivider = 3;
+
+    QImage upperLeft = velocity.copy(
+                0,
+                0,
+                velocity.width()/widthDivider,
+                velocity.height()/heightDivider);
+
+    QImage upperRight = velocity.copy(
+                (velocity.width()/widthDivider)*(widthDivider-1),
+                0,
+                velocity.width()/widthDivider,
+                velocity.height()/heightDivider);
+
+    velocityImage = QImage(
+                (velocity.width()/widthDivider)*2,
+                velocity.height()/heightDivider,
+                velocity.format());
 
     static uint black = QColor(Qt::black).rgb();
     static uint white = QColor(Qt::white).rgb();
 
-    for( int x = 0; x < isolatedImage.width(); ++x )
-        for( int y = 0; y < isolatedImage.height(); ++y )
+    int leftSum = 0, rightSum = 0;
+
+    for( int x = 0; x < velocity.width()/widthDivider; ++x )
+        for( int y = 0; y < velocity.height()/heightDivider; ++y )
         {
-            if( memcmp(&isolatedImage.bits()[(x + y*isolatedImage.width())*4], &white, 4) != 0 )
+            // Separated images' pixels
+            QRgb& ulPixel = *((QRgb*)&upperLeft.bits()[(x + y*upperLeft.width())*4]);
+            QRgb& urPixel = *((QRgb*)&upperRight.bits()[(x + y*upperRight.width())*4]);
+
+            // Combined image pixels
+            QRgb& ulcPixel = *((QRgb*)&velocityImage.bits()[(x + y*velocityImage.width())*4]);
+            QRgb& urcPixel = *((QRgb*)&velocityImage.bits()[(x + upperLeft.width() + y*velocityImage.width())*4]);
+
+            if( ulPixel != white )
+                ulPixel = black;
+            else
+                leftSum++;
+
+            if( urPixel != white )
+                urPixel = black;
+            else
+                rightSum++;
+
+            ulcPixel = ulPixel;
+            urcPixel = urPixel;
+        }
+
+    float leftSumNorm = (float)leftSum / (upperLeft.width() * upperLeft.height());
+    float rightSumNorm = (float)rightSum / (upperRight.width() * upperRight.height());
+
+    if( leftSumNorm > 0.2f || rightSumNorm > 0.2f )
+        isThrowing = true;
+    else
+        isThrowing = false;
+}
+
+void Blob::calculatePosition(float armSize)
+{
+    // Reset the BLOB center
+    this->position = QVector2D(0,0);
+
+    int midY = this->isolatedImage.height() / 2;
+
+    int pixelCountWidth = 0;
+    for(int x = 0; x < this->isolatedImage.width(); x++){
+
+        // Is the pixel white?
+        if (this->isolatedImage.pixel(x,midY) == QColor(Qt::white).rgb())
+        {
+            pixelCountWidth++;
+
+            // Is the current pixel count bigger than an arm?
+            // If so, set our new torso center
+            if (pixelCountWidth > armSize * kinectResolutionWidth )
+                this->position = QVector2D((x -pixelCountWidth/2), 0);
+        }
+        else // The pixel is black
+        {
+            // Check if the last white row is an arm
+            if (pixelCountWidth < armSize * this->isolatedImage.width() )
+                pixelCountWidth = 0;
+
+            // Do we have a potential torso?
+            if( this->position.x() > 0.1f )
             {
-                *((QRgb*)&velocityImage.bits()[(x + y*isolatedImage.width())*4]) = black;
+
+                // Make sure we are dealing with a horizontal arm!
+                // Therefore, check column height in pixels
+                int pixelCountHeight = 0;
+                for( int y = 0; y < this->isolatedImage.height(); ++y )
+                {
+                    if (this->isolatedImage.pixel(this->position.x(),y) == QColor(Qt::white).rgb())
+                        pixelCountHeight++;
+                }
+
+                // Is the column also big, then we are sure it's the torso!
+                if( pixelCountHeight > armSize*kinectResolutionWidth )
+                {
+                    pixelCountWidth = 0;
+                    break;
+                }
             }
         }
+
+    }
+    int centerInPixels = this->boundingBox.left()*kinectResolutionWidth + this->position.x();
+    this->position.setX((float)centerInPixels / kinectResolutionWidth *2.0f - 1.0f);
+
+    QPainter painter;
+    painter.begin(&this->isolatedImage);
+    painter.setPen(QColor(255, 0, 0));
+    painter.drawLine(centerInPixels-this->boundingBox.left()*kinectResolutionWidth, 0, centerInPixels-this->boundingBox.left()*kinectResolutionWidth, isolatedImage.height());
+    painter.end();
 }

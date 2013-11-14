@@ -1,21 +1,23 @@
 #include "Utility.h"
 #include <QImage>
 #include <QColor>
+#include "BlobDetector.h"
+#include <QPainter>
 
-void Utility::sliceDepth(float *pDepthSrc, float *pDest, float nearDepth, float farDepth, const QSize &size)
+void Utility::depthToImage(float *pDepthSrc, QImage *image)
 {
-    for( int x = 0; x < size.width(); ++x )
+    for( int x = 0; x < image->width(); ++x )
     {
-        for( int y = 0; y < size.height(); ++y )
+        for( int y = 0; y < image->height(); ++y )
         {
-            if( pDepthSrc[x + y*size.width()] > nearDepth && pDepthSrc[x + y*size.width()] < farDepth )
-                pDest[x + y*size.width()] = pDepthSrc[x + y*size.width()];
-            else
-                pDest[x + y*size.width()] = 0.0f;
+            // BGRA
+            image->bits()[(x + y*image->width())*4] = pDepthSrc[x + y*image->width()] * 255; //Blue
+            image->bits()[(x + y*image->width())*4+1] = pDepthSrc[x + y*image->width()] * 255; // Green
+            image->bits()[(x + y*image->width())*4+2] = pDepthSrc[x + y*image->width()] * 255; // Red
+            image->bits()[(x + y*image->width())*4+3] = 255; // Alpha
         }
     }
 }
-
 
 void Utility::depthToBinary(float *pDepthSrc, QImage *binaryImage)
 {
@@ -23,6 +25,7 @@ void Utility::depthToBinary(float *pDepthSrc, QImage *binaryImage)
     {
         for( int y = 0; y < binaryImage->height(); ++y )
         {
+            // BGRA (inverse ARGB color channels)
             if( pDepthSrc[x + y*binaryImage->width()] < 0.00001f )
             {
                 binaryImage->bits()[(x + y*binaryImage->width())*4] = 0;

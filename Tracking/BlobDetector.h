@@ -2,6 +2,7 @@
 #define BLOBDETECTOR_H
 
 #include <QImage>
+#include <QVector2D>
 #include "velocitymapper.h"
 #include "tracking_global.h"
 
@@ -15,16 +16,55 @@ struct Blob
      */
     void isolateColor(const QImage& blobImage, const QColor& blobColor);
 
+    /**
+     * @brief isolateVelocity Isolates the velocity image for the 2 hands (upper left and upper right)
+     * @param velocity The global velocity image
+     */
     void isolateVelocity(const QImage& velocity);
 
-    QRectF boundingBox;
-    QImage isolatedImage;
-    QPoint center;
+    /**
+     * @brief calculatePosition Calculates the position of the player in a BLOB
+     *        containing the player. It does so by finfing the center of
+     *        the players torso, filtering out the arms and finding the average depth.
+     * @param armSize The arm thickness in percentage of the blob image.
+     */
+    void calculatePosition(float armSize);
 
-    float avrDepth;
+    /**
+     * @brief boundingBox The BLOBs bounding box
+     */
+    QRectF boundingBox;
+
+    /**
+     * @brief isolatedImage The binary image containing only this BLOB
+     */
+    QImage isolatedImage, isolatedColor;
+
+    /**
+     * @brief position The current calculated position of this BLOB. Can be set using calculatePosition()
+     */
+    QVector2D position;
+
+    /**
+     * @brief size The normalized BLOB size (total pixels divided by pixels belonging to the BLOB)
+     */
     float size;
 
+    /**
+     * @brief kinectResolutionWidth The resolution width of the kinect image (ex. 320).
+     *                              Used for center calculation
+     */
+    int kinectResolutionWidth;
+
+    /**
+     * @brief velocityImage The left and right upper hand velocity image.
+     */
     QImage velocityImage;
+
+    /**
+     * @brief isThrowing Is true when one of the hand velocity images are > 50% white
+     */
+    bool isThrowing;
 };
 
 class TRACKINGSHARED_EXPORT BlobDetector
@@ -39,7 +79,7 @@ public:
      * @param depthThreashold The threashold for separating BLOBs by depth
      * @param minSize The minimum size of a BLOB
      */
-    void update(const QImage& binaryImage, const QImage& velocityImage, const float *depthValues, float depthThreashold, float minSize);
+    void update(const QImage& binaryImage, const QImage& velocityImage, const float *depthValues, float depthThreashold, float minSize, float armSize);
 
     /**
      * @brief getNumBlobs
@@ -52,7 +92,7 @@ public:
      * @param index
      * @return
      */
-    const Blob& getBlob(int index) const;
+    const Blob *getBlob(int index) const;
 
     /**
      * @brief grassFire Performs a grassfire BLOB detection on image and
@@ -80,7 +120,7 @@ public:
     bool testPixel(const QImage &image, QImage &blobImg, const float *depthValues, const QPoint& p);
 
 private:
-    QList<Blob> blobs;
+    QVector<Blob> blobs;
     float depthThreashold;
 };
 

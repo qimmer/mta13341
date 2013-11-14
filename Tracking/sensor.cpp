@@ -7,7 +7,8 @@ Sensor::Sensor()
 {
     sensor = 0;
     nearClip = 1;
-    farClip = USHRT_MAX-500;
+    farClip = 1;
+    rgbStream = 0;
 }
 
 Sensor::~Sensor()
@@ -53,6 +54,9 @@ bool Sensor::initialize(int sensorId, SensorResolution res)
         2,      // Number of frames to buffer
         NULL,   // Event handle
         &this->rgbStream);
+
+    if( this->rgbStream == 0 )
+        return false;
 
     if( res == High )
     {
@@ -105,7 +109,8 @@ bool Sensor::update()
 
                 if( depth >= nearClip && depth < farClip )
                 {
-                    depthData[x + y*imgWidth] = float((double)depth / USHRT_MAX);
+                    USHORT range = farClip - nearClip;
+                    depthData[x + y*imgWidth] = float((double)(depth-nearClip) / range);
                 }
                 else
                     depthData[x + y*imgWidth] = 0.0f;

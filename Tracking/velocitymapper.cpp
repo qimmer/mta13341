@@ -5,8 +5,7 @@
 
 VelocityMapper::VelocityMapper() : QObject(0)
 {
-    forwardOnly = false;
-    decay = 0;
+    forwardOnly = true;
     minima = 0;
     maxima = 0;
     factor = 0;
@@ -42,13 +41,7 @@ void VelocityMapper::update(float *oldDepthData, float *newDepthData, const QSiz
 
             float oldDepth = oldDepthData[x + y*size.width()];
             float newDepth = newDepthData[x + y*size.width()];
-            float velocity = -(newDepth - oldDepth);
-
-            /*if( oldDepth < 0.00001f ||
-                newDepth < 0.00001f ||
-                oldDepth > 0.99999f ||
-                newDepth > 0.99999f )
-                velocity = 0.0f;*/
+            float velocity = (newDepth - oldDepth);
 
             if( forwardOnly )
             {
@@ -66,11 +59,7 @@ void VelocityMapper::update(float *oldDepthData, float *newDepthData, const QSiz
             }
 
 
-            // Is the changing depth artificial or not moving?
-            if( velocity > 0.0f )
-                *velocityPixel = std::min(*velocityPixel + velocity*factor, 1.0f);
-            else
-                *velocityPixel = std::max(*velocityPixel - decay, 0.0f);
+            *velocityPixel = velocity*factor;
 
             if( *velocityPixel > threashold )
                 binaryRgb[0] = binaryRgb[1] = binaryRgb[2] = 255;
@@ -102,11 +91,6 @@ float VelocityMapper::getMaxima() const
     return this->maxima;
 }
 
-float VelocityMapper::getDecay() const
-{
-    return this->decay;
-}
-
 float VelocityMapper::getFactor() const
 {
     return this->factor;
@@ -130,11 +114,6 @@ void VelocityMapper::setMinima(float minima)
 void VelocityMapper::setMaxima(float maxima)
 {
     this->maxima = maxima;
-}
-
-void VelocityMapper::setDecay(float decay)
-{
-    this->decay = decay;
 }
 
 void VelocityMapper::setFactor(float factor)

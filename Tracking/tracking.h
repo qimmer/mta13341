@@ -3,13 +3,16 @@
 
 #include "tracking_global.h"
 
-TRACKINGSHARED_EXPORT int Initialize();
-TRACKINGSHARED_EXPORT int Shutdown();
-TRACKINGSHARED_EXPORT int CountSensors();
-TRACKINGSHARED_EXPORT int CountPlayers(int sensor);
-TRACKINGSHARED_EXPORT float GetPlayerPositionX(int sensor, int player);
-TRACKINGSHARED_EXPORT float GetPlayerPositionY(int sensor, int player);
-TRACKINGSHARED_EXPORT float GetPlayerPositionZ(int sensor, int player);
-TRACKINGSHARED_EXPORT float GetPlayerThrowSpeed(int sensor, int player);
+extern "C" int TRACKINGSHARED_EXPORT trInitialize();
+extern "C" int TRACKINGSHARED_EXPORT trShutdown();
+extern "C" unsigned int TRACKINGSHARED_EXPORT trGetNumSensors();
+extern "C" unsigned int TRACKINGSHARED_EXPORT trGetNumPlayers(unsigned int sensor);
+extern "C" void TRACKINGSHARED_EXPORT trSetNumPlayers(unsigned int sensor, unsigned int players);
+extern "C" float TRACKINGSHARED_EXPORT trGetPlayerPositionX(unsigned int sensor, unsigned int playerId);
+extern "C" float TRACKINGSHARED_EXPORT trGetPlayerPositionZ(unsigned int sensor, unsigned int playerId);
+extern "C" int TRACKINGSHARED_EXPORT trIsPlayerThrowing(unsigned int sensor, unsigned int playerId);
+extern "C" void TRACKINGSHARED_EXPORT trUpdate(unsigned int sensor);
+extern "C" void TRACKINGSHARED_EXPORT trShowDebugger(unsigned int sensor, int show);
+extern "C" int TRACKINGSHARED_EXPORT trIsDebuggerVisible(unsigned int sensor);
 
 #endif // TRACKING_H

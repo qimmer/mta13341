@@ -6,13 +6,14 @@
 #include <QTimer>
 #include <QFile>
 
-MainWindow::MainWindow(QWidget *parent) :
+DebugWindow::DebugWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
     this->depthThreashold = 1.0f;
+    this->armSize = 0.1f;
 
     QFile file("save.dat");
     if( file.exists() )
@@ -34,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
         stream >> farClip;
         stream >> this->depthThreashold;
         stream >> this->minSize;
+        stream >> this->armSize;
 
         sensor.getVelocityMapper()->setDecay(decay);
         sensor.getVelocityMapper()->setMinima(minima);
@@ -61,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->sliFar->setValue(sensor.getFarClip());
         ui->sliDepthThreashold->setValue(this->depthThreashold * 1000);
         ui->sliMinSize->setValue(this->minSize);
+        ui->sliArmSize->setValue(armSize * 1000);
 
         binaryDepth = QImage(sensor.getDepthImage().size(), QImage::Format_ARGB32);
 
@@ -76,12 +79,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-MainWindow::~MainWindow()
+DebugWindow::~DebugWindow()
 {    
     delete ui;
 }
 
-void MainWindow::closeEvent(QCloseEvent *e)
+void DebugWindow::closeEvent(QCloseEvent *e)
 {
     QFile file("save.dat");
 
@@ -98,11 +101,12 @@ void MainWindow::closeEvent(QCloseEvent *e)
     stream << sensor.getFarClip();
     stream << this->depthThreashold;
     stream << this->minSize;
+    stream << this->armSize;
 
     file.close();
 }
 
-void MainWindow::update()
+void DebugWindow::update()
 {
     if( sensor.update() )
     {
@@ -118,7 +122,8 @@ void MainWindow::update()
                     sensor.getVelocityMapper()->getBinaryImage(),
                     sensor.getDepthData(),
                     this->depthThreashold,
-                    this->minSize);
+                    this->minSize,
+                    this->armSize);
 
         if( blobDetector.getNumBlobs() > currentBlobId )
         {
@@ -140,62 +145,67 @@ void MainWindow::update()
     }
 }
 
-void MainWindow::on_sliMinima_valueChanged(int value)
+void DebugWindow::on_sliMinima_valueChanged(int value)
 {
     sensor.getVelocityMapper()->setMinima((float)value / 3000.0f);
 }
 
-void MainWindow::on_sliMaxima_valueChanged(int value)
+void DebugWindow::on_sliMaxima_valueChanged(int value)
 {
     sensor.getVelocityMapper()->setMaxima((float)value / 3000.0f);
 }
 
-void MainWindow::on_sliDecay_valueChanged(int value)
+void DebugWindow::on_sliDecay_valueChanged(int value)
 {
     sensor.getVelocityMapper()->setDecay((float)value / 10000.0f);
 }
 
-void MainWindow::on_sliFactor_valueChanged(int value)
+void DebugWindow::on_sliFactor_valueChanged(int value)
 {
     sensor.getVelocityMapper()->setFactor((float)value / 1000.0f);
 }
 
-void MainWindow::on_sliThreashold_valueChanged(int value)
+void DebugWindow::on_sliThreashold_valueChanged(int value)
 {
     sensor.getVelocityMapper()->setThreashold((float)value / 8000.0f);
 }
 
-void MainWindow::on_chkForward_toggled(bool checked)
+void DebugWindow::on_chkForward_toggled(bool checked)
 {
     sensor.getVelocityMapper()->setForwardOnly(checked);
 }
 
-void MainWindow::on_sliNear_valueChanged(int value)
+void DebugWindow::on_sliNear_valueChanged(int value)
 {
     sensor.setNearClip(value);
 }
 
-void MainWindow::on_sliFar_valueChanged(int value)
+void DebugWindow::on_sliFar_valueChanged(int value)
 {
     sensor.setFarClip(value);
 }
 
-void MainWindow::on_horizontalSlider_valueChanged(int value)
+void DebugWindow::on_horizontalSlider_valueChanged(int value)
 {
     currentBlobId = value;
 }
 
-void MainWindow::on_sliDepthThreashold_valueChanged(int value)
+void DebugWindow::on_sliDepthThreashold_valueChanged(int value)
 {
     this->depthThreashold = float(value) / 1000.0f;
 }
 
-void MainWindow::on_sliMinSize_valueChanged(int value)
+void DebugWindow::on_sliMinSize_valueChanged(int value)
 {
-    this->minSize = value;
+    this->minSize = (float)value / 1000;
 }
 
-void MainWindow::on_cmbDebugImage_currentTextChanged(const QString &arg1)
+void DebugWindow::on_cmbDebugImage_currentTextChanged(const QString &arg1)
 {
     currentDebugImage = arg1;
+}
+
+void DebugWindow::on_sliArmSize_valueChanged(int value)
+{
+    armSize = (float)value / 1000;
 }

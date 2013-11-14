@@ -12,14 +12,14 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class DebugWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit DebugWindow(QWidget *parent = 0);
 
-    ~MainWindow();
+    ~DebugWindow();
 
 protected:
     virtual void closeEvent(QCloseEvent *e);
@@ -52,15 +52,18 @@ private slots:
 
     void on_cmbDebugImage_currentTextChanged(const QString &arg1);
 
+    void on_sliArmSize_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
     QTimer timer;
     Sensor sensor;
-    BlobDetector blobDetector;
+
     QImage binaryDepth;
     int currentBlobId;
     float depthThreashold;
-    int minSize;
+    float armSize;
+    float minSize;
     QString currentDebugImage;
 
     QMap<QString, QImage> debugImages;

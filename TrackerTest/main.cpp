@@ -1,11 +1,20 @@
-#include "mainwindow.h"
-#include <QApplication>
+#include <iostream>
+#include <stddef.h>s
+#include "tracking.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    for( int i = 0; i < 4; ++i )
+    {
+        int numSensors = trInitialize();
+        //trSetNumPlayers(0, 1);
 
-    return a.exec();
+        if( numSensors > 0 )
+        {
+            trUpdate(0);
+        }
+
+        trShutdown();
+    }
+    return 0;
 }

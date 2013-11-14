@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>DebugWindow</class>
+ <widget class="QMainWindow" name="DebugWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1104</width>
-    <height>652</height>
+    <width>282</width>
+    <height>751</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,26 +52,22 @@
               <number>10</number>
              </property>
              <item>
-              <widget class="QLabel" name="label_11">
+              <widget class="QLabel" name="label_9">
                <property name="text">
-                <string>Blob Id to show</string>
+                <string>Minimum Size:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="horizontalSlider">
+              <widget class="QSlider" name="sliMinSize">
+               <property name="minimum">
+                <number>0</number>
+               </property>
                <property name="maximum">
-                <number>8</number>
+                <number>1000</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_9">
-               <property name="text">
-                <string>Minimum Size (in pixels):</string>
                </property>
               </widget>
              </item>
@@ -85,7 +81,7 @@
              <item>
               <widget class="QSlider" name="sliDepthThreashold">
                <property name="maximum">
-                <number>500</number>
+                <number>200</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -93,19 +89,16 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="lblAvrDepth">
+              <widget class="QLabel" name="label_8">
                <property name="text">
-                <string>Blob Average Depth value:</string>
+                <string>Arm Size (%):</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="sliMinSize">
-               <property name="minimum">
-                <number>500</number>
-               </property>
+              <widget class="QSlider" name="sliArmSize">
                <property name="maximum">
-                <number>10000</number>
+                <number>1000</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -195,35 +188,6 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_3">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Decay</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="sliDecay">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximum">
-                <number>1000</number>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QLabel" name="label_4">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -245,7 +209,7 @@
                 </sizepolicy>
                </property>
                <property name="maximum">
-                <number>3000</number>
+                <number>1000</number>
                </property>
                <property name="singleStep">
                 <number>1</number>
@@ -278,18 +242,11 @@
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QCheckBox" name="chkForward">
-               <property name="text">
-                <string>Forward Only</string>
-               </property>
-              </widget>
-             </item>
             </layout>
            </widget>
           </item>
           <item>
-           <widget class="QGroupBox" name="">
+           <widget class="QGroupBox" name="groupBox">
             <property name="title">
              <string>Depth Image</string>
             </property>
@@ -322,7 +279,7 @@
                 </sizepolicy>
                </property>
                <property name="maximum">
-                <number>65000</number>
+                <number>1000</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -345,7 +302,7 @@
                 </sizepolicy>
                </property>
                <property name="maximum">
-                <number>65000</number>
+                <number>1000</number>
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -370,94 +327,6 @@
           </item>
          </layout>
         </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <item>
-           <widget class="QLabel" name="imgDebug">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>320</width>
-              <height>240</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cmbDebugImage"/>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QLabel" name="imgField">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>320</width>
-              <height>240</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_6">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Player Field</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
        </layout>
       </item>
      </layout>
@@ -469,10 +338,31 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1104</width>
+     <width>282</width>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menuBlob">
+     <property name="title">
+      <string>Blobs</string>
+     </property>
+     <addaction name="actionVelocity"/>
+     <addaction name="actionBinary"/>
+     <addaction name="actionColor"/>
+    </widget>
+    <addaction name="actionDepth_Image"/>
+    <addaction name="actionBinary_Depth_image"/>
+    <addaction name="separator"/>
+    <addaction name="menuBlob"/>
+    <addaction name="actionPlayer_Overview"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <addaction name="menuView"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -483,6 +373,46 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionDepth_Image">
+   <property name="text">
+    <string>Depth Image</string>
+   </property>
+  </action>
+  <action name="actionBinary_Depth_image">
+   <property name="text">
+    <string>Binary Depth Image</string>
+   </property>
+  </action>
+  <action name="actionPlayer_Overview">
+   <property name="text">
+    <string>Player Overview</string>
+   </property>
+  </action>
+  <action name="actionColoured">
+   <property name="text">
+    <string>Coloured</string>
+   </property>
+  </action>
+  <action name="actionVelocity">
+   <property name="text">
+    <string>Velocity</string>
+   </property>
+  </action>
+  <action name="actionBinary">
+   <property name="text">
+    <string>Binary</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionColor">
+   <property name="text">
+    <string>Color</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

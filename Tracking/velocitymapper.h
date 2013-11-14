@@ -18,7 +18,6 @@ public:
 
     float getMinima() const;
     float getMaxima() const;
-    float getDecay() const;
     float getFactor() const;
     bool isForwardOnly() const;
     float getThreashold() const;
@@ -26,7 +25,6 @@ public:
 public slots:
     void setMinima(float minima);
     void setMaxima(float maxima);
-    void setDecay(float decay);
     void setFactor(float factor);
     void setForwardOnly(bool fwOnly);
     void setThreashold(float t);
@@ -34,7 +32,7 @@ public slots:
 private:
     QImage binary;
     float *velocityMap;
-    float minima, maxima, decay, factor, threashold;
+    float minima, maxima, factor, threashold;
     bool forwardOnly;
 
 };

@@ -6,6 +6,8 @@
 
 QT       += gui core
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 TARGET = Tracking
 TEMPLATE = lib
 
@@ -31,7 +33,12 @@ SOURCES += tracking.cpp \
     velocitymapper.cpp \
     BlobDetector.cpp \
     utility.cpp \
-    player.cpp
+    player.cpp \
+    debugwindow.cpp \
+    imagedebugger.cpp \
+    sensorimagedebugger.cpp \
+    blobimagedebugger.cpp \
+    playeroverviewdebugger.cpp
 
 HEADERS += tracking.h\
         tracking_global.h \
@@ -40,7 +47,12 @@ HEADERS += tracking.h\
     velocitymapper.h \
     BlobDetector.h \
     utility.h \
-    player.h
+    player.h \
+    debugwindow.h \
+    imagedebugger.h \
+    sensorimagedebugger.h \
+    blobimagedebugger.h \
+    playeroverviewdebugger.h
 
 unix:!symbian {
     maemo5 {
@@ -50,3 +62,9 @@ unix:!symbian {
     }
     INSTALLS += target
 }
+
+FORMS += \
+    debugwindow.ui \
+    imagedebugger.ui \
+    blobimagedebugger.ui \
+    playeroverviewdebugger.ui
