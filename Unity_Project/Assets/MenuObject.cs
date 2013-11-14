@@ -20,6 +20,12 @@ public class MenuObject : MonoBehaviour {
         }
     }
 
+    //void OnCollisionEnter(Collision collision)
+    //{
+    //    Application.LoadLevel(1);
+    //}
+
+    
     void OnMouseEnter()
     {
         mouseOn = true;
@@ -36,4 +42,5 @@ public class MenuObject : MonoBehaviour {
     {
         Application.LoadLevel(1);
     }
+     
 }

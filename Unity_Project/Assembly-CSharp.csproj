@@ -48,6 +48,7 @@
      <Compile Include="Assets\Fire_Projectile.cs" />
      <Compile Include="Assets\MenuObject.cs" />
      <Compile Include="Assets\Player_Movement.cs" />
+     <Compile Include="Assets\rayCast.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
