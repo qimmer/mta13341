@@ -1,9 +1,9 @@
 -debug
 -target:library
 -nowarn:0169
--out:'Temp/Assembly-CSharp.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll'
+-out:Temp/Assembly-CSharp.dll
+-r:"C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll"
+-r:"C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll"
 -define:UNITY_STANDALONE_WIN
 -define:ENABLE_MICROPHONE
 -define:ENABLE_TEXTUREID_MAP
@@ -30,14 +30,13 @@
 -define:UNITY_4_2
 -define:ENABLE_PROFILER
 -define:UNITY_EDITOR
--define:UNITY_EDITOR_OSX
-'Assets/Bullet_Destroy.cs'
-'Assets/Fire_Projectile.cs'
-'Assets/MenuObject.cs'
-'Assets/Player_Movement.cs'
-'Assets/TrackingManager.cs'
-'Assets/TrackingWrapper.cs'
-'Assets/animation.cs'
-'Assets/rayCast.cs'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
--r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Xml.Linq.dll'
+-define:UNITY_EDITOR_WIN
+Assets/Bullet_Destroy.cs
+Assets/Fire_Projectile.cs
+Assets/MenuObject.cs
+Assets/Player_Movement.cs
+Assets/TrackingManager.cs
+Assets/TrackingWrapper.cs
+Assets/rayCast.cs
+-r:"C:/Program Files (x86)/Unity/Editor/Data/Mono\lib/mono/unity\System.Runtime.Serialization.dll"
+-r:"C:/Program Files (x86)/Unity/Editor/Data/Mono\lib/mono/unity\System.Xml.Linq.dll"
