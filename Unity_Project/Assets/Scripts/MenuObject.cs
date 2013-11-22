@@ -3,13 +3,8 @@ using System.Collections;
 
 public class MenuObject : MonoBehaviour {
 
-<<<<<<< HEAD
     public float rotAngle = 4.0F;
     private bool rayOn = false;
-=======
-    public float rotAngle = 0.0F;
-    private bool mouseOn = false;
->>>>>>> 96a1b20057f38fef3789d50c5ea6d019e33eddb0
     private float posZ = 0.0F;
 
     //Initial position, rotation and scale
@@ -17,14 +12,11 @@ public class MenuObject : MonoBehaviour {
     private Vector3 originalScale = new Vector3();
     private Quaternion originalRotation = new Quaternion();
 
-<<<<<<< HEAD
     public void rayHit(bool ray)
     {
         rayOn = ray;
     }
 
-=======
->>>>>>> 96a1b20057f38fef3789d50c5ea6d019e33eddb0
 
     void Start()
     {
@@ -37,27 +29,27 @@ public class MenuObject : MonoBehaviour {
     {
         if (rayOn == true)
         {
-            //if (this.posZ < 0.11F)
-            //{
-            //    posZ = posZ + 0.002F;
-            //    transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - posZ);
-            //}
+            if (this.posZ < 0.11F)
+            {
+                posZ = posZ + 0.002F;
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - posZ);
+            }
 
-            //float scaleX = originalScale.x + (Mathf.Cos(Time.time) * 0.1F + 5.7F);
-            //float scaleY = originalScale.y + (Mathf.Sin(Time.time) * 0.1F + 5.7F);
-            //float rotateX = originalRotation.x + (Mathf.Cos(Time.time) * rotAngle - 2);
-            //float rotateY = originalRotation.y + (Mathf.Sin(Time.time) * rotAngle);
-            //float rotateZ = originalRotation.z + (Mathf.Cos(Time.time) * rotAngle);
-            //transform.localScale = new Vector3(scaleX, scaleY, transform.localScale.z);
-            //transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
-            //transform.localRotation = Quaternion.Euler(new Vector3(rotateX, rotateY, transform.localRotation.z));
+            float scaleX = originalScale.x + (Mathf.Cos(Time.time) * 0.1F + 5.7F);
+            float scaleY = originalScale.y + (Mathf.Sin(Time.time) * 0.1F + 5.7F);
+            float rotateX = originalRotation.x + (Mathf.Cos(Time.time) * rotAngle - 2);
+            float rotateY = originalRotation.y + (Mathf.Sin(Time.time) * rotAngle);
+            float rotateZ = originalRotation.z + (Mathf.Cos(Time.time) * rotAngle);
+            transform.localScale = new Vector3(scaleX, scaleY, transform.localScale.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
+            transform.localRotation = Quaternion.Euler(new Vector3(rotateX, rotateY, transform.localRotation.z));
         }
         else
         {
             transform.localPosition = originalPos;
             transform.localScale = originalScale;
             transform.localRotation = originalRotation;
-            //posZ = 0.0F;
+            posZ = 0.0F;
         }
     }
 
