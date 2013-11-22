@@ -1,0 +1,12 @@
+diff a/Unity_Project/Assembly-CSharp-vs.csproj b/Unity_Project/Assembly-CSharp-vs.csproj	(rejected hunks)
+@@ -48,10 +48,8 @@
+   <ItemGroup>
+      <Compile Include="Assets\Scripts\Bullet_Destroy.cs" />
+      <Compile Include="Assets\Scripts\Fire_Projectile.cs" />
+-     <Compile Include="Assets\Scripts\GameScore.cs" />
+      <Compile Include="Assets\Scripts\MenuObject.cs" />
+      <Compile Include="Assets\Scripts\Player_Movement.cs" />
+-     <Compile Include="Assets\Scripts\Target.cs" />
+      <Compile Include="Assets\Scripts\TrackingManager.cs" />
+      <Compile Include="Assets\Scripts\TrackingWrapper.cs" />
+      <Compile Include="Assets\Scripts\animation.cs" />
