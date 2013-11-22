@@ -3,12 +3,18 @@ using System.Collections;
 
 public class MenuObject : MonoBehaviour {
 
-    public float rotAngle = 0.0F;
+    public float rotAngle = 4.0F;
     private bool mouseOn = false;
     private float posZ = 0.0F;
     private Vector3 originalPos = new Vector3();
     private Vector3 originalScale = new Vector3();
     private Quaternion originalRotation = new Quaternion();
+
+    public void initScript()
+    {
+        Debug.Log("initScript()");
+        Start();
+    }
 
 
     void Start()
@@ -16,6 +22,7 @@ public class MenuObject : MonoBehaviour {
         originalPos = transform.localPosition;
         originalScale = transform.localScale;
         originalRotation = transform.localRotation;
+        Debug.Log("start()");
     }
 
     void Update()
