@@ -3,8 +3,13 @@ using System.Collections;
 
 public class MenuObject : MonoBehaviour {
 
+<<<<<<< HEAD
     public float rotAngle = 4.0F;
     private bool rayOn = false;
+=======
+    public float rotAngle = 0.0F;
+    private bool mouseOn = false;
+>>>>>>> 96a1b20057f38fef3789d50c5ea6d019e33eddb0
     private float posZ = 0.0F;
 
     //Initial position, rotation and scale
@@ -12,11 +17,14 @@ public class MenuObject : MonoBehaviour {
     private Vector3 originalScale = new Vector3();
     private Quaternion originalRotation = new Quaternion();
 
+<<<<<<< HEAD
     public void rayHit(bool ray)
     {
         rayOn = ray;
     }
 
+=======
+>>>>>>> 96a1b20057f38fef3789d50c5ea6d019e33eddb0
 
     void Start()
     {
