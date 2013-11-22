@@ -16,14 +16,14 @@ public class rayCast : MonoBehaviour {
         {
             if (myhit.collider.name == "CityWest" || myhit.collider.name == "CityEast")
             {
-                //mo.rayHit(true);
                 mo = myhit.collider.gameObject.GetComponent<MenuObject>();
                 mo.rayHit(true);
             }
         }
-        else
+        else if (!(mo == null))
         {
             mo.rayHit(false);
         }
+
 	}
 }
