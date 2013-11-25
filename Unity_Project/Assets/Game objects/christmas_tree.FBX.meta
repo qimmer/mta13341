@@ -4,46 +4,36 @@ ModelImporter:
   serializedVersion: 15
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Cone001
-    100004: Cylinder001
-    100006: pCone1
-    100008: pCone2
-    100010: pCone3
-    100012: pCone4
-    100014: pCylinder1
+    100002: pCone1
+    100004: pCone2
+    100006: pCone3
+    100008: pCone4
+    100010: pCylinder1
     400000: //RootNode
-    400002: Cone001
-    400004: Cylinder001
-    400006: pCone1
-    400008: pCone2
-    400010: pCone3
-    400012: pCone4
-    400014: pCylinder1
-    2300000: Cone001
-    2300002: Cylinder001
-    2300004: pCone1
-    2300006: pCone2
-    2300008: pCone3
-    2300010: pCone4
-    2300012: pCylinder1
-    3300000: Cone001
-    3300002: Cylinder001
-    3300004: pCone1
-    3300006: pCone2
-    3300008: pCone3
-    3300010: pCone4
-    3300012: pCylinder1
-    4300000: Cylinder001
-    4300002: Cone001
-    4300004: pCylinder1
-    4300006: pCone1
-    4300008: pCone2
-    4300010: pCone3
-    4300012: pCone4
+    400002: pCone1
+    400004: pCone2
+    400006: pCone3
+    400008: pCone4
+    400010: pCylinder1
+    2300000: pCone1
+    2300002: pCone2
+    2300004: pCone3
+    2300006: pCone4
+    2300008: pCylinder1
+    3300000: pCone1
+    3300002: pCone2
+    3300004: pCone3
+    3300006: pCone4
+    3300008: pCylinder1
+    4300000: pCylinder1
+    4300002: pCone1
+    4300004: pCone2
+    4300006: pCone3
+    4300008: pCone4
     9500000: //RootNode
   materials:
     importMaterials: 1
-    materialName: 0
+    materialName: 2
     materialSearch: 1
   animations:
     legacyGenerateAnimations: 4
