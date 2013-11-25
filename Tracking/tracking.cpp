@@ -80,12 +80,13 @@ float trGetPlayerPositionZ(unsigned int sensor, unsigned int playerId)
 
 int trIsPlayerThrowing(unsigned int sensor, unsigned int playerId)
 {
-    return trackers.at(sensor)->isPlayerThrowing(playerId);
+    return trackers.at(sensor)->isPlayerThrowing(playerId) ? 1 : 0;
 }
 
 
 void trUpdate(unsigned int sensor)
 {
+    app->processEvents(QEventLoop::AllEvents, 2);
     trackers.at(sensor)->update();
 }
 
