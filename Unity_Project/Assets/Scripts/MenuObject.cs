@@ -1,55 +1,69 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/**
+ *@author   Jon Fridrik Jonatansson
+ *@version  1.0
+ *@since    25.11.13
+ */
+
 public class MenuObject : MonoBehaviour {
 
-    public float rotAngle = 4.0F;
-    private bool rayOn = false;
-    private float posZ = 0.0F;
+    public float rotAngle = 4.0F; //Angle of rotation [(-1 * rotAngle) - (1 * rotAngle)]
+    public float posZ = 3.0F; // distance the models move towards player
+    private bool rayOn = false;  
 
     //Initial position, rotation and scale
     private Vector3 originalPos = new Vector3();
-    private Vector3 originalScale = new Vector3();
     private Quaternion originalRotation = new Quaternion();
+    private Vector3 focusPos = new Vector3();
+    private float movespeed = 0.0F;
 
     public void rayHit(bool ray)
     {
         rayOn = ray;
     }
 
-
     void Start()
     {
         originalPos = transform.localPosition;
-        originalScale = transform.localScale;
+        focusPos = new Vector3(originalPos.x, originalPos.y, originalPos.z - posZ);
         originalRotation = transform.localRotation;
     }
 
     void Update()
-    {
+    {        
         if (rayOn == true)
         {
-            if (this.posZ < 0.11F)
+            if (transform.localPosition.z >= focusPos.z)
             {
-                posZ = posZ + 0.002F;
-                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - posZ);
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - (0.011F + movespeed)); // speed of transform
+                movespeed = movespeed + 0.0005F; //Acceloration of model
             }
+            float rotateX = originalRotation.x + (Mathf.Cos(Time.time) * 2.7F);
+            float rotateY = originalRotation.y + (Mathf.Sin(Time.time) * 2.7F);
+            float rotateZ = originalRotation.z + (Mathf.Cos(Time.time) * 2.7F);
 
-            float scaleX = originalScale.x + (Mathf.Cos(Time.time) * 0.1F + 5.7F);
-            float scaleY = originalScale.y + (Mathf.Sin(Time.time) * 0.1F + 5.7F);
-            float rotateX = originalRotation.x + (Mathf.Cos(Time.time) * rotAngle - 2);
-            float rotateY = originalRotation.y + (Mathf.Sin(Time.time) * rotAngle);
-            float rotateZ = originalRotation.z + (Mathf.Cos(Time.time) * rotAngle);
-            transform.localScale = new Vector3(scaleX, scaleY, transform.localScale.z);
-            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
-            transform.localRotation = Quaternion.Euler(new Vector3(rotateX, rotateY, transform.localRotation.z));
+            transform.localRotation = Quaternion.Euler(new Vector3(rotateX, rotateY, rotateZ));
         }
         else
         {
-            transform.localPosition = originalPos;
-            transform.localScale = originalScale;
-            transform.localRotation = originalRotation;
-            posZ = 0.0F;
+            if (transform.localPosition.z < originalPos.z)
+            {
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + (0.011F));
+                
+                //continue wiggle while going back to original pos
+                float rotateX = originalRotation.x + (Mathf.Cos(Time.time) * 2.7F);
+                float rotateY = originalRotation.y + (Mathf.Sin(Time.time) * 2.7F);
+                float rotateZ = originalRotation.z + (Mathf.Cos(Time.time) * 2.7F);
+                transform.localRotation = Quaternion.Euler(new Vector3(rotateX, rotateY, rotateZ));
+            }
+            else
+            {
+                transform.localPosition = originalPos;
+                transform.localRotation = originalRotation;
+                movespeed = 0.0F;
+            }
         }
     }
 
@@ -66,5 +80,4 @@ public class MenuObject : MonoBehaviour {
             Application.LoadLevel(1);
         }
     }
-  
 }
