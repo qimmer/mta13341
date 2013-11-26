@@ -7,19 +7,23 @@ public class player_select_Object : MonoBehaviour {
     {
         if (gameObject.name == "1_Player_East")
         {
-            Application.LoadLevel(3);
+			PlayerPrefs.SetInt("NumPlayers", 1);
+            Application.LoadLevel(2);
         }
         if (gameObject.name == "1_Player_West")
         {
-            Application.LoadLevel(4);
+			PlayerPrefs.SetInt("NumPlayers", 1);
+            Application.LoadLevel(3);
         }
         if (gameObject.name == "2_Player_East") 
         {
-            Application.LoadLevel(5);
+			PlayerPrefs.SetInt("NumPlayers", 2);
+            Application.LoadLevel(2);
         }
         if (gameObject.name == "2_Player_West")
         {
-            Application.LoadLevel(6);
+			PlayerPrefs.SetInt("NumPlayers", 2);
+            Application.LoadLevel(3);
         }
     }
 }
