@@ -1,14 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PickupSpawner.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\MenuObject.cs">
     <Files>
-      <File FileName="Assets\Scripts\Pickup.cs" Line="19" Column="71" />
+      <File FileName="Assets\Scripts\Pickup.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\TrackingWrapper.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\TrackingManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Player_Movement.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Fire_Projectile.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GameScore.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\PickupSpawner.cs" Line="23" Column="4" />
+      <File FileName="Assets\Scripts\PickupSpawner.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\LightRotate.cs" Line="23" Column="1" />
+      <File FileName="Assets\Scripts\MenuObject.cs" Line="53" Column="141" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

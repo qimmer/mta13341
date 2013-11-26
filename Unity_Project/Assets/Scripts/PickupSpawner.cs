@@ -23,9 +23,9 @@ public class PickupSpawner : MonoBehaviour {
 
 			_nextSpawnTime = Time.time + Random.Range(3.0f, 10.0f);
 
-			GameObject inst = Instantiate(PickupPrefab, new Vector3((Random.value * 2 - 1)*10,
+			GameObject inst = Instantiate(PickupPrefab, new Vector3(Random.Range(-9, 9),
 			                                      1,
-			                                      (Random.value * 2 - 1)*7+5),
+			                                      Random.Range(1.5f, -7)),
 			                              new Quaternion()) as GameObject;
 			float scale = Random.value * 6 + 13.5f;
 			inst.transform.localScale = new Vector3( scale, scale, scale );

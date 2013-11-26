@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class TrackingManager : MonoBehaviour {
@@ -7,11 +8,11 @@ public class TrackingManager : MonoBehaviour {
     static int _refCount = 0;
 
 	public float RunSpeed = 0.1f;
-	public GameObject projectile;
+	public GameObject projectile, outOfBounds;
 	public float speed = 20.0F;
     public int NumberOfPlayers = 1;
     bool[] playerThrowing;
-    Vector3[] playerPositions;
+	LinkedList<float>[] playerXs;
 	float[] _lastFire;
 
 	public GameObject[] players;
@@ -41,56 +42,70 @@ public class TrackingManager : MonoBehaviour {
         if (_refCount > 0)
             TrackingWrapper.Update(0);
 
-        if (NumberOfPlayers != _lastNumPlayers)
-        {
-            TrackingWrapper.SetNumPlayers(0, (uint)NumberOfPlayers);
-            playerThrowing = new bool[NumberOfPlayers];
-            playerPositions = new Vector3[NumberOfPlayers];
+		if (NumberOfPlayers != _lastNumPlayers)
+		{
+			TrackingWrapper.SetNumPlayers (0, (uint)NumberOfPlayers);
+			playerThrowing = new bool[NumberOfPlayers];
+			playerXs = new LinkedList<float>[NumberOfPlayers];
 			_lastFire = new float[NumberOfPlayers];
 
-			for( uint i = 0; i < NumberOfPlayers; ++i )
-			{
-				_lastFire[i] = Time.time;
+			for (uint i = 0; i < NumberOfPlayers; ++i) {
+					_lastFire [i] = Time.time;
+				playerXs[i] = new LinkedList<float>();
 			}
-        }
-        _lastNumPlayers = NumberOfPlayers;
+		}
+		_lastNumPlayers = NumberOfPlayers;
 
-        for (uint i = 0; i < (uint)NumberOfPlayers; ++i)
-        {
-            playerPositions[i] = new Vector3(
-                TrackingWrapper.GetPlayerPoitionX(0, i)*12.0f,
-                1.5f,
-                -TrackingWrapper.GetPlayerPoitionZ(0, i)*27.0f + 19.0f
-                );
-
-			playerThrowing[i] = TrackingWrapper.IsPlayerThrowing(0, i) != 0;
-
-
-			/*if( (playerPositions[i] - players[i].transform.position)
-			   .magnitude > 1.0f )*/
+		for (uint i = 0; i < (uint)NumberOfPlayers; ++i)
+		{
+			if (Mathf.Abs (TrackingWrapper.GetPlayerPoitionX (0, i)) < 0.8f &&
+			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) < 0.8f && 
+			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) > 0.1f )
 			{
-				Vector3 direction = (playerPositions[i] - players[i].transform.position);
-				direction /= 4.0f;
+				outOfBounds.guiText.enabled = false;
 
-				players[i].transform.Translate(direction);
+				playerXs [i].AddFirst(new LinkedListNode<float>(TrackingWrapper.GetPlayerPoitionX (0, i)));
+
+				if( playerXs[i].Count > 2 )
+				{
+
+					float average = 0.0f;
+					foreach( float node in playerXs[i] )
+					{
+						average += node;
+					}
+					average /= playerXs[i].Count;
+
+					playerXs[i].RemoveLast();
+
+					playerThrowing [i] = TrackingWrapper.IsPlayerThrowing (0, i) != 0;
+		
+					Vector3 position = new Vector3(average * 20.0f,
+					                               1.3f,
+					                               -TrackingWrapper.GetPlayerPoitionZ (0, i) * 14.0f + 3.0f);
+
+
+					players [i].transform.position = position;
+								
+					if (playerThrowing [i] && (_lastFire [i] + 0.3f) < Time.time)
+					{
+						_lastFire [i] = Time.time;
+
+						Vector3 offset = new Vector3 (0, 4, 0);
+
+						GameObject instantiatedProjectile = Instantiate (projectile,
+	                                        players [i].transform.position + offset,
+	                                       new Quaternion ()) as GameObject;
+			
+						instantiatedProjectile.rigidbody.velocity = transform.TransformDirection (new Vector3 (0, 0, speed));
+
+					}
+				}
 			}
-
-			if( playerThrowing[i] && (_lastFire[i]+0.3f) < Time.time )
+			else // Display out-of-bounds message!
 			{
-				_lastFire[i] = Time.time;
-
-				Vector3 offset = new Vector3(0, 4, 0);
-
-				GameObject instantiatedProjectile = Instantiate(projectile,
-				                                                players[i].transform.position + offset,
-				                                               new Quaternion())
-					as GameObject;
-				
-				instantiatedProjectile.rigidbody.velocity = transform.TransformDirection(new Vector3(0, 0, speed));
+				outOfBounds.guiText.enabled = true;
 			}
-        }
+		}
 	}
-
-
-
 }

@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\EnemyFire_Projectile.cs" />
      <Compile Include="Assets\Scripts\Fire_Projectile.cs" />
      <Compile Include="Assets\Scripts\GameScore.cs" />
+     <Compile Include="Assets\Scripts\LightRotate.cs" />
      <Compile Include="Assets\Scripts\MenuObject.cs" />
      <Compile Include="Assets\Scripts\Pickup.cs" />
      <Compile Include="Assets\Scripts\PickupSpawner.cs" />

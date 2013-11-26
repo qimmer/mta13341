@@ -37,8 +37,8 @@ public class MenuObject : MonoBehaviour {
         {
             if (transform.localPosition.z >= focusPos.z)
             {
-                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - (0.011F + movespeed)); // speed of transform
-                movespeed = movespeed + 0.0005F; //Acceloration of model
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - (0.04F + movespeed)); // speed of transform
+                movespeed = movespeed + 0.003F; //Acceloration of model
             }
             float rotateX = originalRotation.x + (Mathf.Cos(Time.time) * 2.7F);
             float rotateY = originalRotation.y + (Mathf.Sin(Time.time) * 2.7F);
@@ -50,7 +50,7 @@ public class MenuObject : MonoBehaviour {
         {
             if (transform.localPosition.z < originalPos.z)
             {
-                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + (0.011F));
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + (0.1F));
                 
                 //continue wiggle while going back to original pos
                 float rotateX = originalRotation.x + (Mathf.Cos(Time.time) * 2.7F);
