@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/**
+ * A rotation behavior for the Las Vegas sign light
+ */
 public class LightRotate : MonoBehaviour {
 
 	// Use this for initialization

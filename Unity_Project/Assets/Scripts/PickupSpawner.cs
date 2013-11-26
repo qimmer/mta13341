@@ -18,16 +18,22 @@ public class PickupSpawner : MonoBehaviour {
 
 		if (Time.time > _nextSpawnTime)
 		{
-			if( _lastPickup != null )
-				Destroy(_lastPickup);
+			// Set the time to spawn the next pickup
+			_nextSpawnTime = Time.time + Random.Range(6.0f, 18.0f);
 
-			_nextSpawnTime = Time.time + Random.Range(3.0f, 10.0f);
+			// Spawn a new pickup
+			GameObject inst = Instantiate(
+				PickupPrefab, 
+			    new Vector3(
+					Random.Range(-11, 11),
+				    1,
+				    Random.Range(-2, -7)
+				),
+			    new Quaternion()
+			) as GameObject;
 
-			GameObject inst = Instantiate(PickupPrefab, new Vector3(Random.Range(-9, 9),
-			                                      1,
-			                                      Random.Range(1.5f, -7)),
-			                              new Quaternion()) as GameObject;
-			float scale = Random.value * 6 + 13.5f;
+			// Scale it
+			float scale = Random.value * 6 + 10.5f;
 			inst.transform.localScale = new Vector3( scale, scale, scale );
 
 			_lastPickup = inst;
