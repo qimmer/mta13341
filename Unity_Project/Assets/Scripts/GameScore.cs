@@ -19,6 +19,7 @@ public class GameScore : MonoBehaviour {
     public static int numberOfEnemies = 3;
     public static int maxEnemies = 3;
     public int newEnemyInterval = 3;
+    bool addedEnemy = false;
 
     float time;
     public int score;
@@ -44,11 +45,16 @@ public class GameScore : MonoBehaviour {
 
     void addEnemy()
     {
-        if (numberOfEnemies < maxEnemies && ((int) time % newEnemyInterval == 0))
+        if (numberOfEnemies < maxEnemies && ((int) time % newEnemyInterval == 0 && addedEnemy == false))
         {     
             Vector3 randCoor = new Vector3(Random.Range(xMin, xMax), originalLocation.y, Random.Range(zMin, zMax));
             Instantiate(target, randCoor, originalRotation);
             numberOfEnemies++;
+            addedEnemy = true;
+        }
+        if ((int)time % newEnemyInterval == 1)
+        {
+            addedEnemy = false;
         }
     }
 
