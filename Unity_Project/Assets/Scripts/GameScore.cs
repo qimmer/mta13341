@@ -18,6 +18,8 @@ public class GameScore : MonoBehaviour {
     {
         score = currentScore;
 
-        scoreText.text = " " + score;
+        scoreText.text = "Score: " + score;
 	}
+
+    
 }

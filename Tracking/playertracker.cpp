@@ -95,7 +95,7 @@ const QVector2D &PlayerTracker::getPlayerPosition(uint playerId) const
 
 bool PlayerTracker::isPlayerThrowing(uint playerId) const
 {
-    return false;
+    return playersThrowing[playerId];
 }
 
 void PlayerTracker::update()
