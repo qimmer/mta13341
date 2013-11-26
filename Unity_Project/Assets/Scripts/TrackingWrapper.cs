@@ -35,7 +35,7 @@ public class TrackingWrapper
     public static extern float GetPlayerPoitionZ(uint sensor, uint player);
 
     [DllImportAttribute(@"Tracking.dll", EntryPoint = "trIsPlayerThrowing")]
-    public static extern bool IsPlayerThrowing(uint sensor, uint player);
+    public static extern int IsPlayerThrowing(uint sensor, uint player);
 
     [DllImportAttribute(@"Tracking.dll", EntryPoint = "trShowDebugger")]
     public static extern void ShowDebugger(uint sensor, bool visible);
