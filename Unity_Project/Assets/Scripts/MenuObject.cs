@@ -68,16 +68,14 @@ public class MenuObject : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(gameObject.name);
-        
+    {      
         if (gameObject.name == "CityEast")
         {
-            Application.LoadLevel(2);
+            Application.LoadLevel(1);
         }
         if (gameObject.name == "CityWest")
         {
-            Application.LoadLevel(1);
+            Application.LoadLevel(2);
         }
     }
 }

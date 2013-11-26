@@ -59,6 +59,7 @@
      <Compile Include="Assets\Scripts\TrackingWrapper.cs" />
      <Compile Include="Assets\Scripts\animation.cs" />
      <Compile Include="Assets\Scripts\playerCollision.cs" />
+     <Compile Include="Assets\Scripts\player_select_Object.cs" />
      <Compile Include="Assets\Scripts\rayCast.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
