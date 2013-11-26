@@ -20,4 +20,6 @@ public class GameScore : MonoBehaviour {
 
         scoreText.text = "Score: " + score;
 	}
+
+    
 }
