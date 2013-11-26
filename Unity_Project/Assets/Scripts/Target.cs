@@ -72,7 +72,7 @@ public class Target : MonoBehaviour {
         }
 	}
 
-    Vector3 getRandomCoord()
+    public Vector3 getRandomCoord()
     {
         //  Random.seed = 9;       
         Vector3 randCoor = new Vector3(Random.Range(xMin ,xMax), originalLocation.y, Random.Range(zMin ,zMax));
@@ -113,6 +113,7 @@ public class Target : MonoBehaviour {
         if (collision.gameObject.name == "PrefabBullet(Clone)")
         {
             GameScore.currentScore += pointsWorth;
+            GameScore.numberOfEnemies--;
             Destroy(gameObject);
         }
     }
