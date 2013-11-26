@@ -10,7 +10,7 @@ using System.Collections;
 public class MenuObject : MonoBehaviour {
 
     public float rotAngle = 4.0F; //Angle of rotation [(-1 * rotAngle) - (1 * rotAngle)]
-    public float posZ = 3.0F; // distance the models move towards player
+    public float posZ = 6.0F; // distance the models move towards player
     private bool rayOn = false;  
 
     //Initial position, rotation and scale
@@ -71,11 +71,11 @@ public class MenuObject : MonoBehaviour {
     {      
         if (gameObject.name == "CityEast")
         {
-            Application.LoadLevel(1);
+            Application.LoadLevel(2);
         }
         if (gameObject.name == "CityWest")
         {
-            Application.LoadLevel(2);
+            Application.LoadLevel(3);
         }
     }
 }

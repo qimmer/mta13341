@@ -11,6 +11,11 @@ public class TrackingManager : MonoBehaviour {
 	public GameObject projectile, outOfBounds;
 	public float speed = 20.0F;
     public int NumberOfPlayers = 1;
+	public float OffsetZ = 0.0f;
+	public float OffsetY = 0.0f;
+	public float RangeX = 20.0f;
+	public float RangeZ = 20.0f;
+
     bool[] playerThrowing;
 	LinkedList<float>[] playerXs;
 	float[] _lastFire;
@@ -26,7 +31,8 @@ public class TrackingManager : MonoBehaviour {
 
         _refCount++;
 
-
+		if( NumberOfPlayers == 0 )
+			NumberOfPlayers = PlayerPrefs.GetInt ("NumPlayers", 1);
 	}
 
     void OnDestroy()
@@ -44,6 +50,14 @@ public class TrackingManager : MonoBehaviour {
 
 		if (NumberOfPlayers != _lastNumPlayers)
 		{
+			if( NumberOfPlayers == 2 )
+				players[1].SetActive(true);
+			else
+			{
+				if( players.Length > 1 )
+					players[1].SetActive(false);
+			}
+
 			TrackingWrapper.SetNumPlayers (0, (uint)NumberOfPlayers);
 			playerThrowing = new bool[NumberOfPlayers];
 			playerXs = new LinkedList<float>[NumberOfPlayers];
@@ -80,9 +94,9 @@ public class TrackingManager : MonoBehaviour {
 
 					playerThrowing [i] = TrackingWrapper.IsPlayerThrowing (0, i) != 0;
 		
-					Vector3 position = new Vector3(average * 20.0f,
-					                               1.3f,
-					                               -TrackingWrapper.GetPlayerPoitionZ (0, i) * 14.0f + 3.0f);
+					Vector3 position = new Vector3(average * RangeX,
+					                               1.3f + OffsetY,
+					                               -TrackingWrapper.GetPlayerPoitionZ (0, i) * RangeZ + OffsetZ);
 
 
 					players [i].transform.position = position;
@@ -94,7 +108,7 @@ public class TrackingManager : MonoBehaviour {
 						Vector3 offset = new Vector3 (0, 4, 0);
 
 						GameObject instantiatedProjectile = Instantiate (projectile,
-	                                        players [i].transform.position + offset,
+						                                                 players [i].transform.FindChild("bulletSpawn").position,
 	                                       new Quaternion ()) as GameObject;
 			
 						instantiatedProjectile.rigidbody.velocity = transform.TransformDirection (new Vector3 (0, 0, speed));
