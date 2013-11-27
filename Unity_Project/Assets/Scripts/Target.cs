@@ -42,7 +42,6 @@ public class Target : MonoBehaviour {
         {
             if (Physics.Raycast(transform.position, enemySight, out enemyHit, 20) && enemyHit.collider.name.IndexOf("Player") != -1 && !(enemyHit.collider.name == "Target") && !thrown)
             {
-				Debug.Log("enemy shooting");
 				enemy_fire.shoot();
                 thrown = true;
             }
