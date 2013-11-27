@@ -73,7 +73,7 @@ public class TrackingManager : MonoBehaviour {
 		for (uint i = 0; i < (uint)NumberOfPlayers; ++i)
 		{
 			if (Mathf.Abs (TrackingWrapper.GetPlayerPoitionX (0, i)) < 0.8f &&
-			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) < 0.8f && 
+			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) < 0.9f && 
 			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) > 0.1f )
 			{
 				outOfBounds.guiText.enabled = false;
@@ -101,7 +101,7 @@ public class TrackingManager : MonoBehaviour {
 
 					players [i].transform.position = position;
 								
-					if (playerThrowing [i] && (_lastFire [i] + 0.3f) < Time.time)
+					if (playerThrowing [i] && (_lastFire [i] + 0.6f) < Time.time)
 					{
 						_lastFire [i] = Time.time;
 
