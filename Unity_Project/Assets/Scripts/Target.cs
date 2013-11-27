@@ -40,9 +40,10 @@ public class Target : MonoBehaviour {
 
         if (throwing)
         {
-            if (Physics.Raycast(transform.position, enemySight, out enemyHit, 20) && enemyHit.collider.name.Contains("Player") && !(enemyHit.collider.name == "Target") && !thrown)
+            if (Physics.Raycast(transform.position, enemySight, out enemyHit, 20) && enemyHit.collider.name.IndexOf("Player") != -1 && !(enemyHit.collider.name == "Target") && !thrown)
             {
-                enemy_fire.shoot();
+				Debug.Log("enemy shooting");
+				enemy_fire.shoot();
                 thrown = true;
             }
             else if (!(Physics.Raycast(transform.position, enemySight, out enemyHit, 20)))
