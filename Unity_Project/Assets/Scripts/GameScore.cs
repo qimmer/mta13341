@@ -4,24 +4,8 @@ using System.Collections;
 
 public class GameScore : MonoBehaviour {
 
-    public float xMax = 10.5F;
-    public float xMin = -10.5F;
-    public float zMax = 15.6F;
-    public float zMin = 5.6F;
-
-    public int spawnTime = 15;
-    int currSpawnTime;
-
-    private Quaternion originalRotation = new Quaternion();
-    private Vector3 originalLocation = new Vector3();
-
     public static int currentScore = 0;
-    public static int numberOfEnemies = 3;
-    public static int maxEnemies = 3;
-    public int newEnemyInterval = 3;
-    bool addedEnemy = false;
-
-    float time;
+    
     public int score;
     public GUIText scoreText;
     public Transform target;
@@ -29,41 +13,13 @@ public class GameScore : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        currSpawnTime = spawnTime;
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-        time = Time.time;
-        score = currentScore;
-        scoreText.text = "Score: " + score;
-        addMaxEnemies();
-        addEnemy();
-
+		scoreText.text = "Score: " + currentScore;
 	}
 
-    void addEnemy()
-    {
-        if (numberOfEnemies < maxEnemies && ((int) time % newEnemyInterval == 0 && addedEnemy == false))
-        {     
-            Vector3 randCoor = new Vector3(Random.Range(xMin, xMax), originalLocation.y, Random.Range(zMin, zMax));
-            Instantiate(target, randCoor, originalRotation);
-            numberOfEnemies++;
-            addedEnemy = true;
-        }
-        if ((int)time % newEnemyInterval == 1)
-        {
-            addedEnemy = false;
-        }
-    }
-
-    void addMaxEnemies()
-    {
-        if ((int) time == currSpawnTime)
-        {
-            maxEnemies++;
-            currSpawnTime = currSpawnTime + spawnTime;
-        }
-    }
+    
 }

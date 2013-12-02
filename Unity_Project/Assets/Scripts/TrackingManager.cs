@@ -5,120 +5,146 @@ using System;
 
 public class TrackingManager : MonoBehaviour {
 
-    static int _refCount = 0;
+    // Editor Properties
+	public GameObject OutOfBoundsText;
+    public int NumberOfPlayers = 0;
+	public GameObject Bounding_Box;
+	public float Margin = 0.1f;
 
-	public float RunSpeed = 0.1f;
-	public GameObject projectile, outOfBounds;
-	public float speed = 20.0F;
-    public int NumberOfPlayers = 1;
-	public float OffsetZ = 0.0f;
-	public float OffsetY = 0.0f;
-	public float RangeX = 20.0f;
-	public float RangeZ = 20.0f;
+	// Intermediate tracking values
+    bool[] mPlayerThrowing;
+	LinkedList<float>[] mPlayerXs;
+	Vector3[] mPlayerPositions;
+	float[] mLastFire;
+	
+	// Internal stuff
+    private int mLastNumPlayers = 0;
+	private static int sRefCount = 0;
+	private static TrackingManager sSingleton = null;
 
-    bool[] playerThrowing;
-	LinkedList<float>[] playerXs;
-	float[] _lastFire;
+	public static TrackingManager Singleton
+	{
+		get
+		{
+			return sSingleton;
+		}
+	}
 
-	public GameObject[] players;
+	// Exposed final values
+	public Vector3 getPlayerPosition(int playerIndex)
+	{
+		if (playerIndex >= NumberOfPlayers || playerIndex < 0)
+		{
+			print("Player Index out of bounds!");
+			return new Vector3 (0, 0, 0);
+		}
 
-    private int _lastNumPlayers = 0;
+		return mPlayerPositions [playerIndex];
+	}
+
+	public bool isPlayerThrowing(int playerIndex)
+	{
+		if (playerIndex >= NumberOfPlayers || playerIndex < 0)
+		{
+			print("Player Index out of bounds!");
+			return false;
+		}
+
+		return mPlayerThrowing [playerIndex];
+	}
 
 	// Use this for initialization
 	void Start () {
-        if (_refCount == 0)
-            TrackingWrapper.Initialize();
+		if (sRefCount == 0)
+		{
+			TrackingWrapper.Initialize ();
+			sSingleton = this;
+		}
 
-        _refCount++;
+		sRefCount++;
 
 		if( NumberOfPlayers == 0 )
 			NumberOfPlayers = PlayerPrefs.GetInt ("NumPlayers", 1);
+
+		mPlayerThrowing = new bool[NumberOfPlayers];
+		mPlayerXs = new LinkedList<float>[NumberOfPlayers];
+		mPlayerPositions = new Vector3[NumberOfPlayers];
+		mLastFire = new float[NumberOfPlayers];
 	}
 
     void OnDestroy()
     {
-        _refCount--;
+		sRefCount--;
 
-        if (_refCount == 0)
-            TrackingWrapper.Shutdown();
+		if (sRefCount == 0)
+		{
+			sSingleton = null;
+			TrackingWrapper.Shutdown ();
+		}
     }
 
 	// Update is called once per frame
 	void Update () {
-        if (_refCount > 0)
-            TrackingWrapper.Update(0);
+		if (sRefCount <= 0)
+			return;
 
-		if (NumberOfPlayers != _lastNumPlayers)
+		if (NumberOfPlayers != mLastNumPlayers)
 		{
-			if( NumberOfPlayers == 2 )
-				players[1].SetActive(true);
-			else
-			{
-				if( players.Length > 1 )
-					players[1].SetActive(false);
-			}
-
 			TrackingWrapper.SetNumPlayers (0, (uint)NumberOfPlayers);
-			playerThrowing = new bool[NumberOfPlayers];
-			playerXs = new LinkedList<float>[NumberOfPlayers];
-			_lastFire = new float[NumberOfPlayers];
+			mPlayerThrowing = new bool[NumberOfPlayers];
+			mPlayerXs = new LinkedList<float>[NumberOfPlayers];
+			mPlayerPositions = new Vector3[NumberOfPlayers];
+			mLastFire = new float[NumberOfPlayers];
 
 			for (uint i = 0; i < NumberOfPlayers; ++i) {
-					_lastFire [i] = Time.time;
-				playerXs[i] = new LinkedList<float>();
+					mLastFire [i] = Time.time;
+				mPlayerXs[i] = new LinkedList<float>();
 			}
 		}
-		_lastNumPlayers = NumberOfPlayers;
+
+		TrackingWrapper.Update(0);
+
+		mLastNumPlayers = NumberOfPlayers;
 
 		for (uint i = 0; i < (uint)NumberOfPlayers; ++i)
 		{
-			if (Mathf.Abs (TrackingWrapper.GetPlayerPoitionX (0, i)) < 0.8f &&
-			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) < 0.9f && 
-			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) > 0.1f )
+			mPlayerThrowing [i] = false;
+
+			// Check that the player is within the error-margin
+			if (Mathf.Abs (TrackingWrapper.GetPlayerPoitionX (0, i)) < 1.0f - Margin &&
+			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) < 1.0f - Margin && 
+			    Mathf.Abs (TrackingWrapper.GetPlayerPoitionZ (0, i)) > Margin )
 			{
-				outOfBounds.guiText.enabled = false;
+				OutOfBoundsText.guiText.enabled = false;
 
-				playerXs [i].AddFirst(new LinkedListNode<float>(TrackingWrapper.GetPlayerPoitionX (0, i)));
+				mPlayerXs[i].AddFirst(new LinkedListNode<float>(TrackingWrapper.GetPlayerPoitionX (0, i)));
 
-				if( playerXs[i].Count > 2 )
+				// Make sure we can average X-values
+				if( mPlayerXs[i].Count > 2 )
 				{
-
+					// Calculate smoothed/averaged X coordinate (-1.0 to 1.0)
 					float average = 0.0f;
-					foreach( float node in playerXs[i] )
+					foreach( float node in mPlayerXs[i] )
 					{
 						average += node;
 					}
-					average /= playerXs[i].Count;
+					average /= mPlayerXs[i].Count;
 
-					playerXs[i].RemoveLast();
+					mPlayerXs[i].RemoveLast();
 
-					playerThrowing [i] = TrackingWrapper.IsPlayerThrowing (0, i) != 0;
+					mPlayerThrowing [i] = TrackingWrapper.IsPlayerThrowing (0, i) != 0;
 		
-					Vector3 position = new Vector3(average * RangeX,
-					                               1.3f + OffsetY,
-					                               -TrackingWrapper.GetPlayerPoitionZ (0, i) * RangeZ + OffsetZ);
+					// Calculate the world position
+					Bounds bounds = Bounding_Box.renderer.bounds;
 
-
-					players [i].transform.position = position;
-								
-					if (playerThrowing [i] && (_lastFire [i] + 0.6f) < Time.time)
-					{
-						_lastFire [i] = Time.time;
-
-						Vector3 offset = new Vector3 (0, 4, 0);
-
-						GameObject instantiatedProjectile = Instantiate (projectile,
-						                                                 players [i].transform.FindChild("bulletSpawn").position,
-	                                       new Quaternion ()) as GameObject;
-			
-						instantiatedProjectile.rigidbody.velocity = transform.TransformDirection (new Vector3 (0, 0, speed));
-
-					}
+					mPlayerPositions[i] = new Vector3(average * (bounds.extents.x + Margin) + bounds.center.x,
+					                               	  bounds.center.y - bounds.extents.y,
+					                                  (-TrackingWrapper.GetPlayerPoitionZ(0, i) * 2 + 1) * (bounds.extents.z + Margin) + bounds.center.z);
 				}
 			}
 			else // Display out-of-bounds message!
 			{
-				outOfBounds.guiText.enabled = true;
+				OutOfBoundsText.guiText.enabled = true;
 			}
 		}
 	}

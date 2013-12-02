@@ -1,22 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Target.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\TrackingManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\Target.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\TrackingManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\TrackingManager.cs" Line="112" Column="4" />
+      <File FileName="Assets\Scripts\Player.cs" Line="40" Column="33" />
+      <File FileName="Assets\Scripts\MenuObject.cs" Line="80" Column="12" />
       <File FileName="Assets\Scripts\PickupSpawner.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\player_select_Object.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Pickup.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\TrackingWrapper.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GameScore.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\LightRotate.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\MenuObject.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Target.cs" Line="44" Column="14" />
-      <File FileName="Assets\Scripts\playerCollision.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\animation.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Bullet_Destroy.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\EnemyFire_Projectile.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\rayCast.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\EnemySpawner.cs" Line="32" Column="29" />
+      <File FileName="Assets\Scripts\Enemy.cs" Line="118" Column="74" />
+      <File FileName="Assets\Scripts\SnowBall.cs" Line="29" Column="26" />
+      <File FileName="Assets\Scripts\TrackingWrapper.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

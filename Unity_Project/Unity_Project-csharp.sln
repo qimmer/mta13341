@@ -17,19 +17,13 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-<<<<<<< HEAD
-																																																																																																											GlobalSection(MonoDevelopProperties) = preSolution
+																																																																																																																						GlobalSection(MonoDevelopProperties) = preSolution
 =======
 <<<<<<< HEAD
-																																																																																																																GlobalSection(MonoDevelopProperties) = preSolution
-=======
-																																																																																																								GlobalSection(MonoDevelopProperties) = preSolution
+																																																																																																															GlobalSection(MonoDevelopProperties) = preSolution
 =======
 																																																																																																									GlobalSection(MonoDevelopProperties) = preSolution
-=======
-																																																																																																								GlobalSection(MonoDevelopProperties) = preSolution
-=======
-																																																																																																										GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 7060398790cbf6e9b7dfb77b94903cc0bc480622
 >>>>>>> 40f3cf258d64c84fb529ebd415847f44853dbbb9
 =======
 																																																																																																								GlobalSection(MonoDevelopProperties) = preSolution
@@ -37,7 +31,6 @@ Global
 																																																																																																									GlobalSection(MonoDevelopProperties) = preSolution
 =======
 																																																																																																								GlobalSection(MonoDevelopProperties) = preSolution
->>>>>>> 7060398790cbf6e9b7dfb77b94903cc0bc480622
 >>>>>>> 90868c62c577cc3056f15718e899c033f35c313a
 >>>>>>> 56f35c706acfc494f90beb405714ea5c18d93fd2
 =======

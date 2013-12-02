@@ -6,7 +6,6 @@ public class PickupSpawner : MonoBehaviour {
 	public GameObject PickupPrefab;
 
 	float _nextSpawnTime;
-	GameObject _lastPickup = null;
 
 	// Use this for initialization
 	void Start () {
@@ -35,8 +34,6 @@ public class PickupSpawner : MonoBehaviour {
 			// Scale it
 			float scale = Random.value * 6 + 10.5f;
 			inst.transform.localScale = new Vector3( scale, scale, scale );
-
-			_lastPickup = inst;
 		}
 
 	}

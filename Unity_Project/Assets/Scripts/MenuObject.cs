@@ -9,9 +9,11 @@ using System.Collections;
 
 public class MenuObject : MonoBehaviour {
 
+	public GameObject SelectingPlayer;
+
     public float rotAngle = 4.0F; //Angle of rotation [(-1 * rotAngle) - (1 * rotAngle)]
     public float posZ = 6.0F; // distance the models move towards player
-    private bool rayOn = false;  
+	public int LevelToLoad = 1;
 
     //Initial position, rotation and scale
     private Vector3 originalPos = new Vector3();
@@ -19,10 +21,6 @@ public class MenuObject : MonoBehaviour {
     private Vector3 focusPos = new Vector3();
     private float movespeed = 0.0F;
 
-    public void rayHit(bool ray)
-    {
-        rayOn = ray;
-    }
 
     void Start()
     {
@@ -33,8 +31,19 @@ public class MenuObject : MonoBehaviour {
 
     void Update()
     {        
-        if (rayOn == true)
-        {
+		Vector3 forward = SelectingPlayer.transform.TransformDirection(Vector3.forward);
+		RaycastHit myhit = new RaycastHit();
+		
+		//Draws the ray in the editor
+		Debug.DrawRay(SelectingPlayer.transform.position, forward * 5, Color.green);
+
+		bool isHit = Physics.Raycast (SelectingPlayer.transform.position, forward, out myhit, 10);
+
+		if (isHit)
+			isHit = isHit && myhit.collider == this.collider;
+
+		if (isHit)
+		{
             if (transform.localPosition.z >= focusPos.z)
             {
                 transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - (0.04F + movespeed)); // speed of transform
@@ -69,13 +78,6 @@ public class MenuObject : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {      
-        if (gameObject.name == "CityEast")
-        {
-            Application.LoadLevel(2);
-        }
-        if (gameObject.name == "CityWest")
-        {
-            Application.LoadLevel(3);
-        }
+		Application.LoadLevel(LevelToLoad);
     }
 }
