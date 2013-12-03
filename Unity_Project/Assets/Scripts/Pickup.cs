@@ -30,7 +30,7 @@ public class Pickup : MonoBehaviour {
 		{
 			if( (player1.transform.position - this.transform.position).magnitude < 2 )
 			{
-				GameScore.currentScore += 100;
+				GUIManager.currentScore += 100;
 				Destroy(this.gameObject);
 			}
 
@@ -40,7 +40,7 @@ public class Pickup : MonoBehaviour {
 		{
 			if( (player2.transform.position - this.transform.position).magnitude < 2 )
 			{
-				GameScore.currentScore += 100;
+				GUIManager.currentScore += 100;
 				Destroy(this.gameObject);
 			}
 			

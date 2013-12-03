@@ -10,7 +10,11 @@ public class gameController : MonoBehaviour {
 
     public static int lives = 3;
     public static int gameTime = 60;
+<<<<<<< HEAD
     private int[] currHighscore;
+=======
+    private int currHighscore;
+>>>>>>> a1473a04227be6c5b263a16fa933f02a3d1cd806
 
     // Use this for initialization
 	void Start () {
@@ -27,6 +31,7 @@ public class gameController : MonoBehaviour {
         
         if (lives == 0 || Time.time >= gameTime)
         {
+<<<<<<< HEAD
             if (GameScore.currentScore > currHighscore[2])
             {
                 sort(GameScore.currentScore);
@@ -35,6 +40,11 @@ public class gameController : MonoBehaviour {
                     PlayerPrefs.SetInt("HighScore" + i, currHighscore[i]);
                 }
                 
+=======
+            if (GUIManager.currentScore > currHighscore)
+            {
+                PlayerPrefs.SetInt("HighScore", GUIManager.currentScore);
+>>>>>>> a1473a04227be6c5b263a16fa933f02a3d1cd806
             }
             Application.LoadLevel(0);
         }

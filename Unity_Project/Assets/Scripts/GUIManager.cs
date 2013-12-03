@@ -2,13 +2,14 @@
 using System.Collections;
 
 
-public class GameScore : MonoBehaviour {
+public class GUIManager : MonoBehaviour {
 
     public static int currentScore = 0;
     
     public int score;
     public GUIText scoreText;
-    public Transform target;
+    public GUIText timeText;
+    int time;
 
 	// Use this for initialization
 	void Start () 
@@ -18,7 +19,9 @@ public class GameScore : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-		scoreText.text = "Score: " + currentScore;
+        time = (int)Time.time;
+        timeText.text = "Tid: " + (gameController.gameTime - time);
+        scoreText.text = "Score: " + currentScore;
 	}
 
     
