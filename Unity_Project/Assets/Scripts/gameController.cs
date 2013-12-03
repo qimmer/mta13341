@@ -10,11 +10,8 @@ public class gameController : MonoBehaviour {
 
     public static int lives = 3;
     public static int gameTime = 60;
-<<<<<<< HEAD
     private int[] currHighscore;
-=======
-    private int currHighscore;
->>>>>>> a1473a04227be6c5b263a16fa933f02a3d1cd806
+
 
     // Use this for initialization
 	void Start () {
@@ -27,28 +24,22 @@ public class gameController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        
+    void Update()
+    {
         if (lives == 0 || Time.time >= gameTime)
         {
-<<<<<<< HEAD
-            if (GameScore.currentScore > currHighscore[2])
+
+            if (GUIManager.currentScore > currHighscore[2])
             {
-                sort(GameScore.currentScore);
+                sort(GUIManager.currentScore);
                 for (int i = 0; i < currHighscore.Length; i++)
                 {
                     PlayerPrefs.SetInt("HighScore" + i, currHighscore[i]);
                 }
-                
-=======
-            if (GUIManager.currentScore > currHighscore)
-            {
-                PlayerPrefs.SetInt("HighScore", GUIManager.currentScore);
->>>>>>> a1473a04227be6c5b263a16fa933f02a3d1cd806
+                Application.LoadLevel(0);
             }
-            Application.LoadLevel(0);
         }
-	}
+    }
 
     void sort(int currScore)
     {
@@ -61,9 +52,9 @@ public class gameController : MonoBehaviour {
         tmpArr[3] = currScore;
 
         int tmp;
-        for (int i = 0; i < tmpArr.Length; i++)
+        for (int i = 0; i < tmpArr.Length-1; i++)
         {
-            for (int j = 0; j < tmpArr.Length; j++)
+            for (int j = i+1; j < tmpArr.Length; j++)
             {
                 if (tmpArr[i] < tmpArr[j])
                 {

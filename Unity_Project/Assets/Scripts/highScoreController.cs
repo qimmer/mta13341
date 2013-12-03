@@ -12,7 +12,7 @@ public class highScoreController : MonoBehaviour {
     public TextMesh text3;
 
 	// Update is called once per frame
-	void Update () 
+	void Awake() 
     {
         highScore1 = PlayerPrefs.GetInt("HighScore1");
         highScore2 = PlayerPrefs.GetInt("HighScore2");
