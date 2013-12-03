@@ -9,28 +9,67 @@ public class gameController : MonoBehaviour {
      */
 
     public static int lives = 3;
-    public int gameTime = 60;
-    private int currHighscore;
+    public static int gameTime = 60;
+    private int[] currHighscore;
 
     // Use this for initialization
 	void Start () {
-        currHighscore = PlayerPrefs.GetInt("HighScore"); //returns 0 if empty
+        currHighscore = new int[3];
+
+        for (int i = 0; i < currHighscore.Length; i++)
+        {
+            currHighscore[i] = PlayerPrefs.GetInt("HighScore" + i); //returns 0 if empty
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(Time.time);
+        
         if (lives == 0 || Time.time >= gameTime)
         {
-            if (GameScore.currentScore > currHighscore)
+            if (GameScore.currentScore > currHighscore[2])
             {
-                PlayerPrefs.SetInt("HighScore", GameScore.currentScore);
+                sort(GameScore.currentScore);
+                for (int i = 0; i < currHighscore.Length; i++)
+                {
+                    PlayerPrefs.SetInt("HighScore" + i, currHighscore[i]);
+                }
+                
             }
-
-            Debug.Log(PlayerPrefs.GetInt("HighScore"));
             Application.LoadLevel(0);
         }
 	}
+
+    void sort(int currScore)
+    {
+        int[] tmpArr = new int[4];
+
+        for (int z = 0; z < currHighscore.Length; z++)
+        {
+            tmpArr[z] = currHighscore[z];
+        }
+        tmpArr[3] = currScore;
+
+        int tmp;
+        for (int i = 0; i < tmpArr.Length; i++)
+        {
+            for (int j = 0; j < tmpArr.Length; j++)
+            {
+                if (tmpArr[i] < tmpArr[j])
+                {
+                    //swap
+                    tmp = tmpArr[j];
+                    tmpArr[j] = tmpArr[i];
+                    tmpArr[i] = tmp;
+                }
+            }
+        }
+
+        for (int x = 0; x < currHighscore.Length; x++)
+        {
+            currHighscore[x] = tmpArr[x];
+        }
+    }
 
 
 }
