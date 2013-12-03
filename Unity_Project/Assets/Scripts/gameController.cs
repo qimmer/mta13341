@@ -9,7 +9,7 @@ public class gameController : MonoBehaviour {
      */
 
     public static int lives = 3;
-    public int gameTime = 60;
+    public static int gameTime = 60;
     private int currHighscore;
 
     // Use this for initialization
@@ -22,9 +22,9 @@ public class gameController : MonoBehaviour {
         Debug.Log(Time.time);
         if (lives == 0 || Time.time >= gameTime)
         {
-            if (GameScore.currentScore > currHighscore)
+            if (GUIManager.currentScore > currHighscore)
             {
-                PlayerPrefs.SetInt("HighScore", GameScore.currentScore);
+                PlayerPrefs.SetInt("HighScore", GUIManager.currentScore);
             }
 
             Debug.Log(PlayerPrefs.GetInt("HighScore"));

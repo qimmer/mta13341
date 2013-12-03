@@ -122,7 +122,7 @@ public class Enemy : MonoBehaviour {
 	{   
 		if (collision.gameObject.GetComponent(typeof(SnowBall)) != null )
         {
-            GameScore.currentScore += pointsWorth;
+            GUIManager.currentScore += pointsWorth;
             Destroy(gameObject);
         }
     }

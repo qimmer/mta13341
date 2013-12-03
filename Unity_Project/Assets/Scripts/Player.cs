@@ -90,7 +90,7 @@ public class Player : MonoBehaviour {
 		  
 		if (collision.gameObject.GetComponent(typeof(SnowBall)) != null )
 		{
-			GameScore.currentScore = GameScore.currentScore - HitPenalty;
+			GUIManager.currentScore = GUIManager.currentScore - HitPenalty;
             gameController.lives--;
 		}
 	}
