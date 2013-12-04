@@ -1,15 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\TrackingManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\SnowBall.cs">
     <Files>
-      <File FileName="Assets\Scripts\TrackingManager.cs" Line="112" Column="4" />
-      <File FileName="Assets\Scripts\Player.cs" Line="40" Column="33" />
-      <File FileName="Assets\Scripts\MenuObject.cs" Line="80" Column="12" />
+      <File FileName="Assets\Scripts\Player.cs" Line="101" Column="1" />
+      <File FileName="Assets\Scripts\SnowBall.cs" Line="34" Column="36" />
+      <File FileName="Assets\Scripts\TrackingManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Player.cs" Line="62" Column="4" />
+      <File FileName="Assets\Scripts\MenuObject.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\PickupSpawner.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GameScore.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\EnemySpawner.cs" Line="32" Column="29" />
-      <File FileName="Assets\Scripts\Enemy.cs" Line="118" Column="74" />
-      <File FileName="Assets\Scripts\SnowBall.cs" Line="29" Column="26" />
+      <File FileName="Assets\Scripts\EnemySpawner.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Enemy.cs" Line="114" Column="89" />
       <File FileName="Assets\Scripts\TrackingWrapper.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

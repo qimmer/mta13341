@@ -59,7 +59,7 @@ public class Player : MonoBehaviour {
 				as Rigidbody;
 			
 			snowBallObject.rigidbody.velocity = new Vector3 (0, 0, SnowBallSpeed);
-
+			(snowBallObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher = SnowBall.Launcher.Player;
 		}
 	}
 
@@ -90,8 +90,11 @@ public class Player : MonoBehaviour {
 		  
 		if (collision.gameObject.GetComponent(typeof(SnowBall)) != null )
 		{
-			GUIManager.currentScore = GUIManager.currentScore - HitPenalty;
-            gameController.lives--;
+			if( (collision.gameObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher == SnowBall.Launcher.Enemy )
+			{
+				GUIManager.currentScore = GUIManager.currentScore - HitPenalty;
+	            gameController.lives--;
+			}
 		}
 	}
 }

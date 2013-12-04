@@ -116,14 +116,18 @@ public class Enemy : MonoBehaviour {
 			as Rigidbody;
 		
 		snowBallObject.rigidbody.velocity = new Vector3 (0, 0, -SnowBallSpeed);
+		(snowBallObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher = SnowBall.Launcher.Enemy;
 	}
 	
 	void OnCollisionEnter(Collision collision)
 	{   
 		if (collision.gameObject.GetComponent(typeof(SnowBall)) != null )
         {
-            GUIManager.currentScore += pointsWorth;
-            Destroy(gameObject);
+			if( (collision.gameObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher == SnowBall.Launcher.Player )
+			{
+	            GUIManager.currentScore += pointsWorth;
+	            Destroy(gameObject);
+			}
         }
     }
 }

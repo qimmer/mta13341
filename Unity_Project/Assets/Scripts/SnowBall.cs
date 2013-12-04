@@ -3,6 +3,13 @@ using System.Collections;
 
 public class SnowBall : MonoBehaviour {
 
+	public enum Launcher
+	{
+		Enemy,
+		Player
+	}
+
+	public Launcher BallLauncher;
     public float Lifespan = 5;
 	public ParticleSystem HitParticles;
 
@@ -23,7 +30,19 @@ public class SnowBall : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {
-		if (collision.gameObject.GetComponent (typeof(Enemy)) || collision.gameObject.GetComponent (typeof(Player)))
+		// The type to receive the ball
+		System.Type type = typeof(Enemy);
+
+		switch (BallLauncher) {
+		case Launcher.Player:
+			type = typeof(Enemy);
+			break;
+		case Launcher.Enemy:
+			type = typeof(Player);
+			break;
+		}
+
+		if (collision.gameObject.GetComponent(type) != null)
 		{
 			ParticleSystem particleObject = Instantiate(HitParticles, collision.transform.position, new Quaternion()) as ParticleSystem;
 			particleObject.Play();
