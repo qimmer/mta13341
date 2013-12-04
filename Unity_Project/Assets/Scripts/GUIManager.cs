@@ -16,24 +16,22 @@ public class GUIManager : MonoBehaviour {
     public Texture heart3;
     private int currLives;
 
-    int time;
-
 	// Use this for initialization
 	void Start () 
     {
-        currLives = gameController.lives;
+        currLives = GameController.lives;
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-        time = (int)Time.time;
-        timeText.text = "Tid: " + (gameController.gameTime - time);
+        GameController controller = GetComponent(typeof(GameController)) as GameController;
+        timeText.text = "Tid: " + (int) GameController.Singleton.LevelTime;
         scoreText.text = "Score: " + currentScore;
 
-        if (gameController.lives != currLives)
+        if (GameController.lives != currLives)
         {
-            switch (gameController.lives)
+            switch (GameController.lives)
             {
                 case 0:            
                     GUIlives.texture = null;

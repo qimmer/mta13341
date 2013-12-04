@@ -19,7 +19,8 @@ public class EnemySpawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Time.time > mLastSpawnTime + (NewEnemyStartInterval) && numberOfEnemies < maxEnemies)
+
+        if (Time.time > mLastSpawnTime + (NewEnemyStartInterval) && numberOfEnemies < maxEnemies)
 		{
 			numberOfEnemies++;
 
@@ -28,9 +29,6 @@ public class EnemySpawner : MonoBehaviour {
 
 			Enemy enemy = enemyObject.GetComponent(typeof(Enemy)) as Enemy;
 			enemy.Bounding_Area = EnemyArea;
-			enemy.MoveSpeed = 0.03f + (float)numberOfEnemies * 0.01f;
-			enemy.SnowBallSpeed = 10;
-
 
 			mLastSpawnTime = Time.time;
 		}

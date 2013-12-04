@@ -4,13 +4,10 @@ using System.Collections;
 public class Enemy : MonoBehaviour {
 
 	public GameObject Bounding_Area = null;
-	public float ThrowInterval = 0.5f;
 	public Rigidbody SnowBallPrefab;
-	public float SnowBallSpeed = 20.0F;
 	public int pointsWorth = 500;
 	public bool moving = false;
 	public bool throwing = false;
-	public float MoveSpeed = 0.2F;
 
 	private float currentSpeed;
     private float mLastThrow;
@@ -19,10 +16,12 @@ public class Enemy : MonoBehaviour {
 
     void Start()
     {
+        GameController controller = GameObject.Find("GameController").GetComponent(typeof(GameController)) as GameController;
+
 		mLastThrow = Time.time;
         originalLocation = getRandomCoord();
 		transform.position = originalLocation;
-		currentSpeed = MoveSpeed;
+		currentSpeed = controller.EnemyMoveSpeed;
         whereTo = getRandomCoord();
     }
 
@@ -36,7 +35,7 @@ public class Enemy : MonoBehaviour {
         //Draw rays on enemy
         Debug.DrawRay(transform.position, enemySight * 20, Color.red);
 
-		if (throwing && Time.time > (mLastThrow + ThrowInterval) )
+		if (throwing && Time.time > (mLastThrow + GameController.Singleton.ThrowInterval) )
         {
 			int layerMask = 1 << 8;
 			
@@ -71,13 +70,16 @@ public class Enemy : MonoBehaviour {
 
     public Vector3 getRandomCoord()
     {
+        GameController controller = GameObject.Find("GameController").GetComponent(typeof(GameController)) as GameController;
+
+
 		if (Bounding_Area == null)
 			return new Vector3 ();
 
 		Bounds b = Bounding_Area.renderer.bounds;
         //  Random.seed = 9;       
 		Vector3 randCoor = new Vector3(Random.Range(b.min.x,b.max.x), b.center.y - b.extents.y, Random.Range(b.min.z, b.max.z));
-        currentSpeed = Random.Range(MoveSpeed*0.7f, MoveSpeed*1.3f);
+        currentSpeed = Random.Range(controller.EnemyMoveSpeed*0.7f, controller.EnemyMoveSpeed*1.3f);
 
         return randCoor;
     }
@@ -115,7 +117,7 @@ public class Enemy : MonoBehaviour {
 		                                               transform.rotation)
 			as Rigidbody;
 		
-		snowBallObject.rigidbody.velocity = new Vector3 (0, 0, -SnowBallSpeed);
+		snowBallObject.rigidbody.velocity = new Vector3 (0, 0, -GameController.Singleton.SnowBallSpeed);
 		(snowBallObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher = SnowBall.Launcher.Enemy;
 	}
 	

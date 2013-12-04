@@ -93,7 +93,7 @@ public class Player : MonoBehaviour {
 			if( (collision.gameObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher == SnowBall.Launcher.Enemy )
 			{
 				GUIManager.currentScore = GUIManager.currentScore - HitPenalty;
-	            gameController.lives--;
+	            GameController.lives--;
 			}
 		}
 	}
