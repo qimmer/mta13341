@@ -26,9 +26,8 @@ public class gameController : MonoBehaviour {
 	// Update is called once per frame
     void Update()
     {
-        if (lives == 0 || Time.time >= gameTime)
+        if (lives <= 0 || Time.time >= gameTime)
         {
-
             if (GUIManager.currentScore > currHighscore[2])
             {
                 sort(GUIManager.currentScore);
@@ -36,8 +35,9 @@ public class gameController : MonoBehaviour {
                 {
                     PlayerPrefs.SetInt("HighScore" + i, currHighscore[i]);
                 }
-                Application.LoadLevel(0);
+                
             }
+            Application.LoadLevel(0);
         }
     }
 
@@ -71,6 +71,4 @@ public class gameController : MonoBehaviour {
             currHighscore[x] = tmpArr[x];
         }
     }
-
-
 }
