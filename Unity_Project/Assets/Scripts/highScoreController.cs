@@ -3,23 +3,19 @@ using System.Collections;
 
 public class highScoreController : MonoBehaviour {
 
-    int highScore0;
-    int highScore1;
-    int highScore2;
-
+    public TextMesh text0;
     public TextMesh text1;
     public TextMesh text2;
-    public TextMesh text3;
+
+    public string input0;
+    public string input1;
+    public string input2;
 
 	// Update is called once per frame
 	void Awake() 
-    {
-        highScore0 = PlayerPrefs.GetInt("HighScore0");
-        highScore1 = PlayerPrefs.GetInt("HighScore1");
-        highScore2 = PlayerPrefs.GetInt("HighScore2");
-
-        text1.text = highScore0.ToString();
-        text2.text = highScore1.ToString();
-        text3.text = highScore2.ToString();
+    {      
+        text0.text = PlayerPrefs.GetInt(input0).ToString();
+        text1.text = PlayerPrefs.GetInt(input1).ToString();
+        text2.text = PlayerPrefs.GetInt(input2).ToString();
 	}
 }
