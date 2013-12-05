@@ -39,16 +39,17 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>e:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>e:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\EnemySpawner.cs" />
      <Compile Include="Assets\Scripts\GUIManager.cs" />
+     <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\LightRotate.cs" />
      <Compile Include="Assets\Scripts\MenuObject.cs" />
      <Compile Include="Assets\Scripts\Pickup.cs" />
@@ -57,7 +58,6 @@
      <Compile Include="Assets\Scripts\SnowBall.cs" />
      <Compile Include="Assets\Scripts\TrackingManager.cs" />
      <Compile Include="Assets\Scripts\TrackingWrapper.cs" />
-     <Compile Include="Assets\Scripts\gameController.cs" />
      <Compile Include="Assets\Scripts\highScoreController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
