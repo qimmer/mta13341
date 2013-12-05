@@ -77,7 +77,22 @@ public class MenuObject : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision collision)
-    {      
-		Application.LoadLevel(LevelToLoad);
+    {
+        if (this.gameObject.name == "CityEast" || this.gameObject.name == "CityWest")
+        {
+            PlayerPrefs.SetInt("SelectedLevel", LevelToLoad);
+            TrackingManager.Singleton.Bounding_Box = GameObject.Find("PlayerAreaGameMode");
+        }
+        if (this.gameObject.name == "EasyMode" || this.gameObject.name == "HardMode")
+        {
+            Debug.Log("Mode");
+            PlayerPrefs.SetString("SelectedGameMode", this.gameObject.name);
+            //TrackingManager.Singleton.Bounding_Box = GameObject.Find("PlayerAreaPlayerSelect");
+            Application.LoadLevel(PlayerPrefs.GetInt("SelectedLevel"));
+        }
+        //if (TrackingManager.Singleton.Bounding_Box.name == "PlayerAreaPlayerSelect")
+        //{
+
+        //}
     }
 }

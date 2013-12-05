@@ -13,19 +13,19 @@ public class GameController : MonoBehaviour {
     private float levelStart;
     private int[] currHighscore;
 
-    public float LevelTime
-    {
-        get 
-        {
-            return Time.time - levelStart;
-        }
-    }
-
     public static GameController Singleton
     {
         get
         {
             return GameObject.Find("GameController").GetComponent(typeof(GameController)) as GameController;
+        }
+    }
+    
+    public float LevelTime
+    {
+        get 
+        {
+            return Time.time - levelStart;
         }
     }
 

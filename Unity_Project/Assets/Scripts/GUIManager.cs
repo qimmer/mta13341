@@ -25,13 +25,16 @@ public class GUIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        GameController controller = GetComponent(typeof(GameController)) as GameController;
-        timeText.text = "Tid: " + (int) GameController.Singleton.LevelTime;
+        if (GameController.Singleton != null)
+        {
+            timeText.text = "Tid: " + (int)GameController.Singleton.LevelTime;
+            
+        }
         scoreText.text = "Score: " + currentScore;
 
         if (GameController.lives != currLives)
         {
-            switch (GameController.lives)
+            switch (GameController.lives)   
             {
                 case 0:            
                     GUIlives.texture = null;
