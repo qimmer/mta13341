@@ -19,6 +19,10 @@ public class GUIManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        if (PlayerPrefs.GetString("SelectedGameMode").Equals("HardMode"))
+        {
+            GUIlives.texture = heart3;
+        }
         currLives = GameController.lives;
 	}
 	

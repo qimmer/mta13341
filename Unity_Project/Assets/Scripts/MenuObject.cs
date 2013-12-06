@@ -81,11 +81,20 @@ public class MenuObject : MonoBehaviour {
         if (this.gameObject.name == "CityEast" || this.gameObject.name == "CityWest")
         {
             PlayerPrefs.SetInt("SelectedLevel", LevelToLoad);
+            Vector3 playerPos = GameObject.Find("Player1").transform.localPosition;
+            Vector3 nextArea = GameObject.Find("PlayerAreaGameMode").transform.localPosition;
+            //while ((nextArea.x - playerPos.x) > 1.0f)
+            //{
+            //    playerPos = Vector3.MoveTowards(playerPos, nextArea, 1.0F);
+            //}
+            Debug.Log(playerPos.x + "         " + nextArea.x);
+            playerPos = Vector3.MoveTowards(playerPos, nextArea, 0.02F);
+
             TrackingManager.Singleton.Bounding_Box = GameObject.Find("PlayerAreaGameMode");
         }
+        
         if (this.gameObject.name == "EasyMode" || this.gameObject.name == "HardMode")
         {
-            Debug.Log("Mode");
             PlayerPrefs.SetString("SelectedGameMode", this.gameObject.name);
             //TrackingManager.Singleton.Bounding_Box = GameObject.Find("PlayerAreaPlayerSelect");
             Application.LoadLevel(PlayerPrefs.GetInt("SelectedLevel"));

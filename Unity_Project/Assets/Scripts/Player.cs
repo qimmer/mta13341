@@ -90,10 +90,13 @@ public class Player : MonoBehaviour {
 		  
 		if (collision.gameObject.GetComponent(typeof(SnowBall)) != null )
 		{
-			if( (collision.gameObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher == SnowBall.Launcher.Enemy )
+			if( (collision.gameObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher == SnowBall.Launcher.Enemy)
 			{
 				GUIManager.currentScore = GUIManager.currentScore - HitPenalty;
-	            GameController.lives--;
+                if (PlayerPrefs.GetString("SelectedGameMode").Equals("HardMode"))
+                {
+                    GameController.lives--;
+                }
 			}
 		}
 	}

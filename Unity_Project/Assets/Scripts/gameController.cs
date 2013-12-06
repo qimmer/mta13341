@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour {
 
     public static int lives = 3;
     public static float gameTime = 60;
+    private string gameMode;
     private float levelStart;
     private int[] currHighscore;
 
@@ -25,7 +26,14 @@ public class GameController : MonoBehaviour {
     {
         get 
         {
-            return Time.time - levelStart;
+            if (gameMode.Equals("EasyMode"))
+            {
+                return Time.time - levelStart;
+            }
+            else
+            {
+                return Time.time;
+            }
         }
     }
 
@@ -55,12 +63,13 @@ public class GameController : MonoBehaviour {
 
     // Use this for initialization
 	void Start () {
+        gameMode = PlayerPrefs.GetString("SelectedGameMode");
         currHighscore = new int[3];
         levelStart = Time.time;
 
         for (int i = 0; i < currHighscore.Length; i++)
         {
-            currHighscore[i] = PlayerPrefs.GetInt("HighScore" + i); //returns 0 if empty
+            currHighscore[i] = PlayerPrefs.GetInt(gameMode + "HighScore" + i); //returns 0 if empty
         }
 	}
 	
@@ -71,19 +80,19 @@ public class GameController : MonoBehaviour {
         {
             if (GUIManager.currentScore > currHighscore[2])
             {
-                sort(GUIManager.currentScore);
+                selectionSort(GUIManager.currentScore);
 
                 for (int i = 0; i < currHighscore.Length; i++)
                 {
-                    PlayerPrefs.SetInt("HighScore", currHighscore[i]);
-                }
-                
+                    PlayerPrefs.SetInt(gameMode + "HighScore" + i, currHighscore[i]);
+                } 
             }
+            GUIManager.currentScore = 0;
             Application.LoadLevel(0);
         }
     }
 
-    void sort(int currScore)
+    void selectionSort(int currScore)
     {
         int[] tmpArr = new int[currHighscore.Length +1];
 
