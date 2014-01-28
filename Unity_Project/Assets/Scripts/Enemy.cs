@@ -117,7 +117,7 @@ public class Enemy : MonoBehaviour {
 		                                               transform.rotation)
 			as Rigidbody;
 		
-		snowBallObject.rigidbody.velocity = new Vector3 (0, 0, -GameController.Singleton.SnowBallSpeed);
+		snowBallObject.rigidbody.velocity = new Vector3 (0, 0, -GameController.Singleton.EnemySnowBallSpeed);
 		(snowBallObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher = SnowBall.Launcher.Enemy;
 	}
 	
@@ -128,6 +128,7 @@ public class Enemy : MonoBehaviour {
 			if( (collision.gameObject.GetComponent(typeof(SnowBall)) as SnowBall).BallLauncher == SnowBall.Launcher.Player )
 			{
 	            GUIManager.currentScore += pointsWorth;
+                EnemySpawner.numberOfEnemies--;
 	            Destroy(gameObject);
 			}
         }

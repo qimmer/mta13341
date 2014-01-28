@@ -42,13 +42,17 @@ public class SnowBall : MonoBehaviour {
 			break;
 		}
 
-		if (collision.gameObject.GetComponent(type) != null)
-		{
-			ParticleSystem particleObject = Instantiate(HitParticles, collision.transform.position, new Quaternion()) as ParticleSystem;
-			particleObject.Play();
-			Destroy(particleObject.gameObject, 2);
-			Destroy (gameObject);
-		}
+        if (collision.gameObject.GetComponent(type) != null)
+        {
+            ParticleSystem particleObject = Instantiate(HitParticles, collision.transform.position, new Quaternion()) as ParticleSystem;
+            particleObject.Play();
+            Destroy(particleObject.gameObject, 2);
+            Destroy(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
 }

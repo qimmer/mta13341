@@ -87,21 +87,40 @@ public class MenuObject : MonoBehaviour {
             //{
             //    playerPos = Vector3.MoveTowards(playerPos, nextArea, 1.0F);
             //}
-            Debug.Log(playerPos.x + "         " + nextArea.x);
+            //Debug.Log(playerPos.x + "         " + nextArea.x);
             playerPos = Vector3.MoveTowards(playerPos, nextArea, 0.02F);
 
+
+            GameController.lives = 3;
             TrackingManager.Singleton.Bounding_Box = GameObject.Find("PlayerAreaGameMode");
         }
         
         if (this.gameObject.name == "EasyMode" || this.gameObject.name == "HardMode")
         {
+            Vector3 playerPos = GameObject.Find("Player1").transform.localPosition;
+            Vector3 nextArea = GameObject.Find("PlayerAreaPlayerSelect").transform.localPosition;
+ 
             PlayerPrefs.SetString("SelectedGameMode", this.gameObject.name);
-            //TrackingManager.Singleton.Bounding_Box = GameObject.Find("PlayerAreaPlayerSelect");
-            Application.LoadLevel(PlayerPrefs.GetInt("SelectedLevel"));
+
+            playerPos = Vector3.MoveTowards(playerPos, nextArea, 0.02F);
+            TrackingManager.Singleton.Bounding_Box = GameObject.Find("PlayerAreaPlayerSelect");
+            Application.LoadLevel(PlayerPrefs.GetInt("SelectedLevel"));  
+            
         }
         //if (TrackingManager.Singleton.Bounding_Box.name == "PlayerAreaPlayerSelect")
         //{
 
+        //    if (this.gameObject.name == "1PlayerSelect")
+        //    {
+        //        PlayerPrefs.SetInt("NumPlayers", 1);
+        //        Application.LoadLevel(PlayerPrefs.GetInt("SelectedLevel"));
+        //    }
+        //    else if (this.gameObject.name == "2PlayerSelect")
+        //    {
+        //        PlayerPrefs.SetInt("NumPlayers", 2);
+
+        //    }
         //}
+        
     }
 }

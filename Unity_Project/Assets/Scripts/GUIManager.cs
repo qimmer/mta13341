@@ -23,6 +23,10 @@ public class GUIManager : MonoBehaviour {
         {
             GUIlives.texture = heart3;
         }
+        else
+        {
+            GUIlives.texture = null;
+        }
         currLives = GameController.lives;
 	}
 	
@@ -31,10 +35,10 @@ public class GUIManager : MonoBehaviour {
     {
         if (GameController.Singleton != null)
         {
-            timeText.text = "Tid: " + (int)GameController.Singleton.LevelTime;
+            timeText.text = "Tid: " + (GameController.gameTime - (int) GameController.Singleton.LevelTime);
             
         }
-        scoreText.text = "Score: " + currentScore;
+        scoreText.text = "Point: " + currentScore;
 
         if (GameController.lives != currLives)
         {
@@ -54,7 +58,5 @@ public class GUIManager : MonoBehaviour {
                     break;
             }
         }
-	}
-
-    
+	}    
 }

@@ -9,10 +9,23 @@ public class GameController : MonoBehaviour {
      */
 
     public static int lives = 3;
-    public static float gameTime = 60;
+    public static float gameTime = 120;
     private string gameMode;
     private float levelStart;
     private int[] currHighscore;
+
+    //EnemySnowballSpeed
+    float enemyCurrSBallSpeed = 7.0f;
+    int enemySBallInterval = 17;
+    int enemyCurrSBallInterval;
+
+    //EnemyMoveSpeed
+    float enemyCurrMoveSpeed = 0.2f;
+    int enemyMoveSpeedInterval = 15;
+    int enemyCurrMoveSpeedInterval;
+
+
+
 
     public static GameController Singleton
     {
@@ -26,14 +39,7 @@ public class GameController : MonoBehaviour {
     {
         get 
         {
-            if (gameMode.Equals("EasyMode"))
-            {
-                return Time.time - levelStart;
-            }
-            else
-            {
-                return Time.time;
-            }
+            return Time.time - levelStart;
         }
     }
 
@@ -41,15 +47,37 @@ public class GameController : MonoBehaviour {
     {
         get
         {
-            return 0.5f / (LevelTime / 10.0f + 1.0f);
+            return 0.5f;// / (LevelTime / 10.0f + 1.0f);
         }
     }
 
-    public float SnowBallSpeed
+    public float EnemySnowBallSpeed
     {
         get
         {
-            return 20.0f * (LevelTime / 10.0f + 1.0f);
+            if (gameMode.Equals("EasyMode"))
+            {
+                if ((int) LevelTime == enemyCurrSBallInterval)
+                {
+                    enemyCurrSBallSpeed = enemyCurrSBallSpeed + 1.0f;
+                    enemyCurrSBallInterval += enemySBallInterval;
+                }
+
+                return enemyCurrSBallSpeed;
+            }
+            else
+            {
+                //return 20.0f * (LevelTime / 20.0f + 1.0f);
+                if ((int)LevelTime == enemyCurrSBallInterval)
+                {
+                    enemyCurrSBallSpeed = enemyCurrSBallSpeed + 1.0f;
+                    enemyCurrSBallInterval += enemySBallInterval;
+                }
+
+                return enemyCurrSBallSpeed;
+
+            }  
+            
         }
     }
 
@@ -57,7 +85,26 @@ public class GameController : MonoBehaviour {
     {
         get
         {
-            return 0.4f * (LevelTime / 10.0f + 1.0f);
+            if (gameMode.Equals("EasyMode"))
+            {
+                if ((int)LevelTime == enemyCurrMoveSpeedInterval)
+                {
+                    enemyCurrMoveSpeed = enemyCurrMoveSpeed + 0.05f;
+                    enemyCurrMoveSpeedInterval += enemyMoveSpeedInterval;
+                }
+                return enemyCurrMoveSpeed;
+            }
+            else
+            {
+                //return 0.4f * (LevelTime / 20.0f + 1.0f);
+
+                if ((int)LevelTime == enemyCurrMoveSpeedInterval)
+                {
+                    enemyCurrMoveSpeed = enemyCurrMoveSpeed + 0.05f;
+                    enemyCurrMoveSpeedInterval += enemyMoveSpeedInterval;
+                }
+                return enemyCurrMoveSpeed;
+            }          
         }
     }
 
@@ -66,6 +113,10 @@ public class GameController : MonoBehaviour {
         gameMode = PlayerPrefs.GetString("SelectedGameMode");
         currHighscore = new int[3];
         levelStart = Time.time;
+        
+        //Seting Intervals
+        enemyCurrSBallInterval = enemySBallInterval;
+        enemyCurrMoveSpeedInterval = enemyMoveSpeedInterval;
 
         for (int i = 0; i < currHighscore.Length; i++)
         {
@@ -76,19 +127,39 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
     void Update()
     {
-        if (lives <= 0 || LevelTime >= gameTime)
-        {
-            if (GUIManager.currentScore > currHighscore[2])
+        if (gameMode.Equals("EasyMode"))
+        {           
+            if (LevelTime >= gameTime)
             {
-                selectionSort(GUIManager.currentScore);
-
-                for (int i = 0; i < currHighscore.Length; i++)
+                if (GUIManager.currentScore > currHighscore[2])
                 {
-                    PlayerPrefs.SetInt(gameMode + "HighScore" + i, currHighscore[i]);
-                } 
+                    selectionSort(GUIManager.currentScore);
+
+                    for (int i = 0; i < currHighscore.Length; i++)
+                    {
+                          PlayerPrefs.SetInt(gameMode + "HighScore" + i, currHighscore[i]);
+                    } 
+                }
+                GUIManager.currentScore = 0;
+                Application.LoadLevel(0);
             }
-            GUIManager.currentScore = 0;
-            Application.LoadLevel(0);
+        }
+        else
+        {
+            if (lives <= 0)
+            {
+                if (GUIManager.currentScore > currHighscore[2])
+                {
+                    selectionSort(GUIManager.currentScore);
+
+                    for (int i = 0; i < currHighscore.Length; i++)
+                    {
+                        PlayerPrefs.SetInt(gameMode + "HighScore" + i, currHighscore[i]);
+                    }
+                }
+                GUIManager.currentScore = 0;
+                Application.LoadLevel(0);
+            }
         }
     }
 

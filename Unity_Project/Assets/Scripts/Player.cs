@@ -4,10 +4,10 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	public float SnowBallSpeed = 10.0f;
+	public float SnowBallSpeed = 20.0f;
 	public float MinFireInterval = 0.6f;
 	public float SpeedEpsilon = 0.01f;
-	public int HitPenalty = 0;
+	public int HitPenalty = 100;
 
 	public int PlayerIndex = 0;
 	public Rigidbody SnowBallPrefab;
